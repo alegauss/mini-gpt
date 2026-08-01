@@ -5,6 +5,10 @@ import minigpt.data.Dataset;
 import minigpt.generate.Sampler;
 import minigpt.model.BigramModel;
 import minigpt.model.LanguageModel;
+import minigpt.model.MlpModel;
+import minigpt.model.TrainableModel;
+import minigpt.model.TransformerModel;
+import minigpt.train.Trainer;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -21,22 +25,21 @@ import java.util.Random;
  * <h2>Subcomandos</h2>
  * <ul>
  *   <li>{@code train}    — treina um modelo e reporta loss de treino/validacao.</li>
- *   <li>{@code generate} — gera texto a partir de um prompt.</li>
- *   <li>{@code compare}  — roda os modelos disponiveis no mesmo prompt,
- *       lado a lado.</li>
+ *   <li>{@code generate} — treina e gera texto a partir de um prompt.</li>
+ *   <li>{@code compare}  — treina os tres modelos no mesmo corpus e imprime
+ *       as saidas lado a lado.</li>
  * </ul>
  *
- * <p><b>Estado atual (ETAPA 1):</b> apenas o {@link BigramModel} esta
- * implementado. Os niveis MLP (ETAPA 2) e Transformer (ETAPA 3) serao
- * adicionados nas proximas etapas; ate la os subcomandos avisam quando um
- * modelo ainda nao existe.</p>
+ * <p>Os modelos {@code mlp} e {@code transformer} nao persistem pesos entre
+ * execucoes: cada comando treina do zero (rapido para o MLP; use
+ * {@code --steps} para ajustar o Transformer). O {@code bigram} apenas conta
+ * pares, sem treino iterativo.</p>
  *
  * <h2>Exemplos</h2>
  * <pre>
- *   mvn -q exec:java             # (ou via JAR) mostra a ajuda
- *   java -jar target/mini-gpt-java.jar train --model bigram
- *   java -jar target/mini-gpt-java.jar generate --model bigram --prompt "O " --length 200
- *   java -jar target/mini-gpt-java.jar compare --prompt "O "
+ *   java -jar target/mini-gpt-java.jar train --model transformer --steps 3000
+ *   java -jar target/mini-gpt-java.jar generate --model mlp --prompt "O " --length 200
+ *   java -jar target/mini-gpt-java.jar compare --prompt "O " --steps 500
  * </pre>
  */
 public final class App {
@@ -80,42 +83,33 @@ public final class App {
     private static void cmdTrain(Map<String, String> opts) {
         String modelName = opts.getOrDefault("model", "bigram");
         String corpusPath = opts.getOrDefault("corpus", DEFAULT_CORPUS);
-        int blockSize = intOpt(opts, "context", 8);
         long seed = longOpt(opts, "seed", DEFAULT_SEED);
 
         String text = readCorpus(corpusPath);
         CharTokenizer tokenizer = CharTokenizer.fromText(text);
         int[] ids = tokenizer.encode(text);
-        Dataset dataset = new Dataset(ids, blockSize, 0.9);
+
+        int context = contextFor(modelName, opts);
+        Dataset dataset = new Dataset(ids, context, 0.9);
 
         System.out.println("== Treino: modelo '" + modelName + "' ==");
         System.out.println("Corpus: " + corpusPath + " (" + text.length()
                 + " caracteres, vocabulario V=" + tokenizer.vocabSize() + ")");
-        System.out.println("Treino: " + dataset.trainSize()
-                + " tokens | Validacao: " + dataset.valSize() + " tokens");
+        System.out.println("Contexto=" + context + " | Treino: " + dataset.trainSize()
+                + " tokens | Validacao: " + dataset.valSize() + " tokens\n");
 
-        long t0 = System.nanoTime();
-        LanguageModel model = buildAndTrain(modelName, tokenizer, dataset);
-        if (model == null) {
-            return;
-        }
-        double trainLoss = model.evaluateLoss(dataset.trainIds());
-        double valLoss = model.evaluateLoss(dataset.valIds());
-        double secs = (System.nanoTime() - t0) / 1e9;
+        LanguageModel model = buildAndTrain(modelName, tokenizer, dataset, opts,
+                defaultSteps(modelName, opts), true);
 
-        System.out.printf("passo=%-6s loss_treino=%.4f loss_val=%.4f tempo=%.2fs%n",
-                "final", trainLoss, valLoss, secs);
-
-        // Salva o vocabulario para geracao posterior.
+        // Salva o vocabulario (util para inspecao / uso futuro).
         Path vocabPath = Path.of("target", modelName + ".vocab");
         tokenizer.save(vocabPath);
-        System.out.println("Vocabulario salvo em " + vocabPath);
+        System.out.println("\nVocabulario salvo em " + vocabPath);
 
-        // Amostra final, para o aluno ver o resultado imediatamente.
         Random rng = new Random(seed);
         Sampler sampler = new Sampler(model, tokenizer, rng);
-        String sample = sampler.generate("", 200, 1.0, 0);
-        System.out.println("\n--- amostra (200 caracteres, temp=1.0) ---");
+        String sample = sampler.generate("", 200, 0.9, 0);
+        System.out.println("\n--- amostra final (200 caracteres, temp=0.9) ---");
         System.out.println(sample);
     }
 
@@ -126,18 +120,21 @@ public final class App {
         int length = intOpt(opts, "length", 200);
         double temperature = doubleOpt(opts, "temp", 1.0);
         int topK = intOpt(opts, "topk", 0);
-        int blockSize = intOpt(opts, "context", 8);
         long seed = longOpt(opts, "seed", DEFAULT_SEED);
 
         String text = readCorpus(corpusPath);
         CharTokenizer tokenizer = CharTokenizer.fromText(text);
         int[] ids = tokenizer.encode(text);
-        Dataset dataset = new Dataset(ids, blockSize, 0.9);
+        int context = contextFor(modelName, opts);
+        Dataset dataset = new Dataset(ids, context, 0.9);
 
-        LanguageModel model = buildAndTrain(modelName, tokenizer, dataset);
-        if (model == null) {
-            return;
+        if (!modelName.equals("bigram")) {
+            System.out.println("(treinando '" + modelName + "' por "
+                    + defaultSteps(modelName, opts) + " passos...)");
         }
+        LanguageModel model = buildAndTrain(modelName, tokenizer, dataset, opts,
+                defaultSteps(modelName, opts), false);
+
         Random rng = new Random(seed);
         Sampler sampler = new Sampler(model, tokenizer, rng);
         String out = sampler.generate(prompt, length, temperature, topK);
@@ -148,28 +145,29 @@ public final class App {
         String corpusPath = opts.getOrDefault("corpus", DEFAULT_CORPUS);
         String prompt = opts.getOrDefault("prompt", "");
         int length = intOpt(opts, "length", 200);
-        double temperature = doubleOpt(opts, "temp", 1.0);
+        double temperature = doubleOpt(opts, "temp", 0.9);
         int topK = intOpt(opts, "topk", 0);
-        int blockSize = intOpt(opts, "context", 8);
         long seed = longOpt(opts, "seed", DEFAULT_SEED);
 
         String text = readCorpus(corpusPath);
         CharTokenizer tokenizer = CharTokenizer.fromText(text);
         int[] ids = tokenizer.encode(text);
-        Dataset dataset = new Dataset(ids, blockSize, 0.9);
 
         String[] levels = { "bigram", "mlp", "transformer" };
         System.out.println("== compare (prompt=\"" + prompt + "\", "
-                + length + " caracteres, temp=" + temperature + ") ==\n");
+                + length + " caracteres, temp=" + temperature + ") ==");
+        System.out.println("Corpus: " + text.length() + " caracteres, V="
+                + tokenizer.vocabSize() + "\n");
 
         for (String levelName : levels) {
-            LanguageModel model = tryBuildAndTrain(levelName, tokenizer, dataset);
-            System.out.println("### " + levelName + " ###");
-            if (model == null) {
-                System.out.println("(ainda nao implementado - chega numa etapa futura)\n");
-                continue;
-            }
-            double valLoss = model.evaluateLoss(dataset.valIds());
+            int context = contextFor(levelName, opts);
+            Dataset dataset = new Dataset(ids, context, 0.9);
+            // Menos passos no compare para ser rapido; ajustavel com --steps.
+            int steps = intOpt(opts, "steps", levelName.equals("transformer") ? 400 : 800);
+            System.out.println("### " + levelName + " (treinando "
+                    + (levelName.equals("bigram") ? "por contagem" : steps + " passos") + ") ###");
+            LanguageModel model = buildAndTrain(levelName, tokenizer, dataset, opts, steps, false);
+            double valLoss = valLossEstimate(model, dataset);
             Random rng = new Random(seed);
             Sampler sampler = new Sampler(model, tokenizer, rng);
             String out = sampler.generate(prompt, length, temperature, topK);
@@ -178,37 +176,92 @@ public final class App {
     }
 
     // ------------------------------------------------------------------
-    // Construcao de modelos
+    // Construcao e treino de modelos
     // ------------------------------------------------------------------
 
     /**
-     * Constroi e treina o modelo pedido; imprime aviso e devolve
-     * {@code null} se o nivel ainda nao existir.
+     * Constroi o modelo pedido e o treina (o bigrama apenas conta pares).
+     *
+     * @param name    bigram | mlp | transformer
+     * @param tok     tokenizador
+     * @param ds      dataset ja com o contexto correto para o modelo
+     * @param opts    opcoes da CLI
+     * @param steps   numero de passos de treino (ignorado pelo bigrama)
+     * @param verbose imprime progresso do treino
+     * @return modelo pronto para gerar/avaliar
      */
-    private static LanguageModel buildAndTrain(String name, CharTokenizer tok, Dataset ds) {
-        LanguageModel m = tryBuildAndTrain(name, tok, ds);
-        if (m == null) {
-            System.out.println("Modelo '" + name + "' ainda nao implementado nesta etapa.");
-            System.out.println("Disponivel agora: bigram (ETAPA 1).");
-        }
-        return m;
-    }
-
-    /** Igual a {@link #buildAndTrain}, mas silencioso: devolve null sem log. */
-    private static LanguageModel tryBuildAndTrain(String name, CharTokenizer tok, Dataset ds) {
+    private static LanguageModel buildAndTrain(String name, CharTokenizer tok, Dataset ds,
+                                               Map<String, String> opts, int steps, boolean verbose) {
+        long seed = longOpt(opts, "seed", DEFAULT_SEED);
         switch (name) {
             case "bigram": {
-                BigramModel model = new BigramModel(tok.vocabSize(), 1.0);
-                model.fit(ds.trainIds());
-                return model;
+                BigramModel m = new BigramModel(tok.vocabSize(), 1.0);
+                m.fit(ds.trainIds());
+                if (verbose) {
+                    System.out.printf("loss_treino=%.4f loss_val=%.4f%n",
+                            m.evaluateLoss(ds.trainIds()), m.evaluateLoss(ds.valIds()));
+                }
+                return m;
             }
-            case "mlp":
-            case "transformer":
-                // Serao implementados nas ETAPAS 2 e 3.
-                return null;
+            case "mlp": {
+                int embed = intOpt(opts, "embed", 24);
+                int hidden = intOpt(opts, "hidden", 128);
+                MlpModel m = new MlpModel(tok.vocabSize(), ds.blockSize(), embed, hidden, seed);
+                trainModel(m, ds, tok, opts, steps, verbose);
+                return m;
+            }
+            case "transformer": {
+                int embed = intOpt(opts, "embed", 128);
+                int heads = intOpt(opts, "heads", 4);
+                int nblocks = intOpt(opts, "blocks", 2);
+                TransformerModel m = new TransformerModel(
+                        tok.vocabSize(), ds.blockSize(), embed, heads, nblocks, seed);
+                trainModel(m, ds, tok, opts, steps, verbose);
+                return m;
+            }
             default:
                 throw new IllegalArgumentException("Modelo desconhecido: " + name);
         }
+    }
+
+    private static void trainModel(TrainableModel m, Dataset ds, CharTokenizer tok,
+                                   Map<String, String> opts, int steps, boolean verbose) {
+        int batch = intOpt(opts, "batch", m.name().equals("transformer") ? 16 : 32);
+        double lr = doubleOpt(opts, "lr", 1e-3);
+        long seed = longOpt(opts, "seed", DEFAULT_SEED);
+        int evalInterval = Math.max(1, Math.min(100, steps / 10));
+        Trainer.Config cfg = new Trainer.Config(
+                steps, batch, lr, 1e-4, evalInterval, 500, 100, 1.0, 10, seed, verbose);
+        new Trainer(m, ds, tok, cfg).train();
+    }
+
+    private static double valLossEstimate(LanguageModel model, Dataset ds) {
+        if (model instanceof TrainableModel tm) {
+            return Trainer.estimateLoss(tm, ds, false, 10, 16, new Random(0));
+        }
+        return model.evaluateLoss(ds.valIds());
+    }
+
+    /** Contexto (block size) padrao de cada modelo, sobreponivel por --context. */
+    private static int contextFor(String name, Map<String, String> opts) {
+        int def;
+        switch (name) {
+            case "transformer": def = 64; break;
+            case "mlp":         def = 8;  break;
+            default:            def = 8;  break; // bigrama usa so trainIds
+        }
+        return intOpt(opts, "context", def);
+    }
+
+    /** Numero de passos padrao por modelo (bigrama nao treina). */
+    private static int defaultSteps(String name, Map<String, String> opts) {
+        int def;
+        switch (name) {
+            case "transformer": def = 2000; break; // ~25 min em CPU comum
+            case "mlp":         def = 3000; break; // rapido (poucos segundos)
+            default:            def = 0;    break;
+        }
+        return intOpt(opts, "steps", def);
     }
 
     // ------------------------------------------------------------------
@@ -221,7 +274,7 @@ public final class App {
             throw new IllegalStateException(
                     "Corpus nao encontrado em '" + path + "'.\n"
                     + "Coloque um arquivo .txt em portugues (UTF-8) nesse caminho. "
-                    + "Veja data/corpus.txt para instrucoes.");
+                    + "Veja data/README.md para instrucoes.");
         }
         try {
             return Files.readString(p, StandardCharsets.UTF_8);
@@ -271,8 +324,8 @@ public final class App {
                 "",
                 "Subcomandos:",
                 "  train     Treina um modelo e reporta loss de treino/validacao.",
-                "  generate  Gera texto a partir de um prompt.",
-                "  compare   Roda os modelos disponiveis lado a lado.",
+                "  generate  Treina e gera texto a partir de um prompt.",
+                "  compare   Treina os tres modelos e imprime as saidas lado a lado.",
                 "  help      Mostra esta ajuda.",
                 "",
                 "Opcoes comuns:",
@@ -282,9 +335,14 @@ public final class App {
                 "  --length   caracteres a gerar             (padrao: 200)",
                 "  --temp     temperatura de amostragem      (padrao: 1.0)",
                 "  --topk     mantem os k mais provaveis      (padrao: 0 = desligado)",
-                "  --context  comprimento de contexto        (padrao: 8)",
-                "  --seed     semente aleatoria              (padrao: " + DEFAULT_SEED + ")",
-                "",
-                "Etapa atual: 1 (bigrama). MLP e Transformer chegam nas etapas 2 e 3."));
+                "  --steps    passos de treino (mlp/transformer)",
+                "  --context  comprimento de contexto        (mlp=8, transformer=64)",
+                "  --embed    dimensao do embedding          (mlp=24, transformer=128)",
+                "  --hidden   tamanho da camada oculta do MLP (padrao: 128)",
+                "  --heads    cabecas de atencao (transformer) (padrao: 4)",
+                "  --blocks   blocos do transformer            (padrao: 2)",
+                "  --batch    tamanho do mini-batch           (mlp=32, transformer=16)",
+                "  --lr       taxa de aprendizado             (padrao: 1e-3)",
+                "  --seed     semente aleatoria               (padrao: " + DEFAULT_SEED + ")"));
     }
 }
