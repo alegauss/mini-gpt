@@ -1,0 +1,35 @@
+Este e um corpus de exemplo, pequeno e propositalmente simples, escrito
+apenas para que o projeto rode assim que voce clona o repositorio. Ele
+NAO tem tamanho suficiente para treinar um bom modelo. Troque este arquivo
+por um texto em portugues de dominio publico com cerca de um megabyte.
+
+O rato roeu a roupa do rei de Roma. A manha estava clara e o vento soprava
+devagar entre as arvores do quintal. As criancas corriam pela rua estreita,
+riam alto e chamavam umas as outras pelos nomes. Havia um cheiro de pao
+quente vindo da padaria da esquina, e o velho relojoeiro abria a porta da
+loja com cuidado, como fazia todos os dias.
+
+A cidade acordava aos poucos. Os bondes passavam com um ruido metalico,
+carregando gente apressada para o trabalho. Nas janelas, cortinas brancas
+balancavam ao sabor da brisa. Uma mulher regava as flores da varanda e
+cantarolava uma cancao antiga, dessas que a avo dela costumava cantar.
+
+O menino gostava de olhar o rio. Sentava na beira, jogava pedras na agua e
+contava os circulos que se formavam na superficie. Pensava nas historias
+que o pai lhe contava a noite, sobre barcos, tempestades e ilhas distantes
+onde moravam pessoas que falavam linguas estranhas e bonitas.
+
+Quando a chuva chegava, o mundo mudava de cor. As ruas ficavam brilhantes,
+os telhados escuros, e o som das gotas no zinco parecia musica. Todos
+corriam para dentro de casa, menos o cachorro, que adorava se molhar e
+sacudia o pelo com alegria, espalhando agua por toda parte.
+
+Assim passavam os dias, iguais e diferentes ao mesmo tempo. Cada manha
+trazia a mesma luz e uma novidade pequena: uma carta, um visitante, uma
+noticia. E a vida seguia seu curso tranquilo, feito de gestos simples,
+palavras gentis e o habito reconfortante das coisas que se repetem.
+
+O tempo passa, as estacoes mudam, e as pessoas envelhecem sem perceber.
+Mas a memoria guarda os detalhes: o som de uma voz, o gosto de uma fruta,
+o calor de uma tarde de verao. Sao essas lembrancas que damos aos livros,
+para que nao se percam, para que outros possam senti-las tambem um dia.
