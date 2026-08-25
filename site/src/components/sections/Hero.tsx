@@ -1,4 +1,4 @@
-import { hero, heroSession, page, repoUrl } from "../../lib/site-content";
+import { hero, heroSession, page, productName, repoUrl } from "../../lib/site-content";
 import { levels } from "../../lib/levels";
 import { Rich } from "../ui/Rich";
 import { HeroSession } from "../HeroSession";
@@ -9,7 +9,7 @@ export function Hero() {
   return (
     <header className="hero" id="topo">
       <div className="wrap">
-        <img className="hero-icon" src={`${page("/")}logo.svg`} alt="Logotipo do mini-gpt-java" />
+        <img className="hero-icon" src={`${page("/")}logo.svg`} alt={`Logotipo do ${productName}`} />
         <div className="badge">
           <span className="dot" /> {hero.badge}
         </div>

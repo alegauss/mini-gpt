@@ -38,15 +38,15 @@
   </g>
 
   <g font-family="DejaVu Sans, sans-serif">
-    <text x="88" y="330" fill="#ece9fb" font-size="76" font-weight="bold">mini-gpt-java</text>
+    <text x="88" y="330" fill="#ece9fb" font-size="76" font-weight="bold">Mini GPT</text>
     <text x="88" y="392" fill="#b9a4ff" font-size="34" font-weight="bold">
-      Um GPT escrito à mão, para você entender como ele funciona
+      Um GPT pequeno o bastante para você ler inteiro
     </text>
     <text x="88" y="452" fill="#a9a2c9" font-size="27">
       Modelo de linguagem em nível de caractere, do zero, em Java puro.
     </text>
     <text x="88" y="492" fill="#a9a2c9" font-size="27">
-      Sem nenhuma biblioteca de machine learning.
+      Treze arquivos, ~3.200 linhas, nenhuma biblioteca de machine learning.
     </text>
 
     <g transform="translate(88, 530)">

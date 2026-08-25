@@ -8,14 +8,29 @@ import type { Block, Rich } from "./content-types";
 
 /* ------------------------------------------------------------------ meta e cromo */
 
+/**
+ * O nome do projeto, escrito uma vez.
+ *
+ * O nome curto é a marca: é o que aparece no cabeçalho, no rodapé e no cartão social.
+ * O qualificador "em Java puro" NÃO faz parte dele, mas continua nos `<title>` de cada
+ * página — porque "Mini GPT" sozinho é um nome que muita gente já usou (minGPT, nanoGPT,
+ * dezenas de repositórios), e é justamente "em Java, pequeno o bastante para ler inteiro" que distingue este de
+ * todos eles. Marca curta na tela, identidade completa no título.
+ *
+ * O que este nome NÃO governa são os artefatos: o jar continua `mini-gpt-java.jar`, o
+ * groupId continua `minigpt` e o repositório continua `alegauss/mini-gpt`. Nome de arquivo
+ * não é marca, e renomeá-los invalidaria todo comando documentado aqui.
+ */
+export const productName = "Mini GPT";
+
 export const meta = {
-  title: "mini-gpt-java — um GPT escrito à mão, em Java puro",
+  title: `${productName} — um GPT em Java, pequeno o bastante para ler inteiro`,
   description:
     "Curso aberto e código-fonte de um modelo de linguagem em nível de caractere escrito do zero em Java, sem nenhuma biblioteca de machine learning. Três níveis: bigrama por contagem, MLP com backpropagation manual e um Transformer mínimo com autodiff.",
   og: {
-    title: "mini-gpt-java",
+    title: productName,
     description:
-      "Três níveis, do bigrama que conta pares até um Transformer com atenção causal — toda a álgebra escrita à mão em double[][], para você poder ler cada conta.",
+      "Três níveis, do bigrama que conta pares até um Transformer com atenção causal. Toda a álgebra linear é implementada dentro do projeto, em double[][], para você poder ler cada conta.",
   },
 } as const;
 
@@ -36,6 +51,39 @@ export const navLinks = [
   { href: page("/como-rodar"), label: "Como rodar" },
 ];
 
+/* ------------------------------------------------------------------ patrocínio */
+
+// O bloco de patrocínio é renderizado com o resto da página, no servidor, então o
+// patrocinador está no HTML servido em vez de injetado depois da carga — declarar um apoio
+// que só existe depois de rodar JavaScript não valeria a declaração.
+//
+// Os cartões dos produtos trazem as marcas de verdade sobre uma placa branca: reproduzidas
+// como foram publicadas, nunca recoloridas para caber nesta paleta.
+export const sponsor = {
+  label: "Patrocinado por",
+  name: "Viglet",
+  url: "https://www.viglet.org",
+  siteLabel: "viglet.org",
+  logo: `${BASE_PATH}viglet/viglet-logo.png`,
+  summary:
+    "Ferramentas de busca e de conteúdo em código aberto, para organizações com muita coisa a publicar. Rodam nos seus próprios servidores, sem licença por usuário.",
+  license: "Apache 2.0 e auto-hospedáveis",
+  products: [
+    {
+      name: "Viglet Turing ES",
+      url: "https://turing.viglet.org",
+      logo: `${BASE_PATH}viglet/turing-logo.png`,
+      inline: "para o visitante achar o que veio buscar, com respostas de IA tiradas só do seu próprio conteúdo",
+    },
+    {
+      name: "Viglet Shio CMS",
+      url: "https://shio.viglet.org",
+      logo: `${BASE_PATH}viglet/shio-logo.png`,
+      inline: "para uma página nova entrar no ar no mesmo dia, revisada e aprovada pela sua equipe",
+    },
+  ],
+} as const;
+
 export const footer = {
   links: [
     { href: page("/"), label: "Início" },
@@ -45,33 +93,35 @@ export const footer = {
     { href: `${repoUrl}/blob/main/README.md`, label: "README" },
   ],
   disclaimer:
-    "Projeto didático e independente. Não é um produto, não é rápido e não pretende competir com nenhuma biblioteca de machine learning — pretende ser legível. Os trechos de terminal deste site ilustram o formato da saída do treino; os números que a sua máquina imprimir dependem do seu corpus, do seu hardware e da sua semente.",
+    "Projeto didático e independente, escrito para ser legível. Não é um produto e não compete em velocidade com nenhuma biblioteca de machine learning. Os trechos de terminal deste site ilustram o formato da saída do treino; os números que a sua máquina imprimir dependem do seu corpus, do seu hardware e da sua semente.",
 } as const;
 
 /* ------------------------------------------------------------------ herói */
 
 export const hero = {
-  badge: "Java 17 · Maven · zero bibliotecas de ML",
-  titleLead: "Um GPT escrito à mão,",
-  titleAccent: "para você entender cada conta",
+  badge: "Java 21 · Maven 3.9 · zero bibliotecas de ML",
+  titleLead: "Um GPT pequeno o bastante",
+  titleAccent: "para você ler inteiro",
   sub: [
     "Um modelo de linguagem em ",
     { b: "nível de caractere" },
-    ", treinado do zero em Java puro. Sem PyTorch, sem TensorFlow, sem DJL: toda a álgebra linear é ",
+    ", do zero em Java puro. Sem PyTorch, sem TensorFlow, sem DJL: toda a álgebra linear é ",
     { code: "double[][]" },
-    " que você consegue ler de cima a baixo. Três níveis, do bigrama que só conta pares até um Transformer com atenção causal.",
+    " que cabe na tela. ",
+    { b: "Treze arquivos, cerca de 3.200 linhas" },
+    " — e três níveis, do bigrama que só conta pares até um Transformer com atenção causal.",
   ] as Rich,
   ctaPrimary: "Começar pelo nível 1",
   ctaGhost: "★ Ver no GitHub",
   meta: [
-    "Java 17+ e Maven",
-    "Uma única dependência: JUnit 5",
+    "JDK 21+ e Maven 3.9+",
+    "Uma única dependência: JUnit 6",
     "Roda em CPU comum, sem GPU",
     "Gradientes conferidos por diferenças finitas",
   ],
   pills: [
     [{ b: "Nível 1" }, " — Bigrama: contagem pura, sem gradiente"] as Rich,
-    [{ b: "Nível 2" }, " — MLP: backpropagation derivada à mão"] as Rich,
+    [{ b: "Nível 2" }, " — MLP: backpropagation explícita, sem autodiff"] as Rich,
     [{ b: "Nível 3" }, " — Transformer: autodiff e atenção"] as Rich,
   ],
 } as const;
@@ -89,7 +139,7 @@ export type SessionLine = { text: string; tone?: "ok" | "hl" | "cy" | "dim" | "w
 
 export const heroSession = {
   eyebrow: "Um treino, do começo ao fim",
-  title: "mini-gpt-java — train --model transformer",
+  title: `${productName} — train --model transformer`,
   lines: [
     { text: "$ java -jar target/mini-gpt-java.jar train --model transformer --steps 2000", tone: "ok" },
     { text: "== Treino: modelo 'transformer' ==", tone: "white" },
@@ -116,9 +166,9 @@ export const heroSession = {
     { text: "Vocabulario salvo em target/transformer.vocab", tone: "ok" },
   ] as SessionLine[],
   note: [
-    "Repare no que acontece entre o passo 500 e o 2000: o modelo não ganha um dicionário, ele ganha ",
+    "Repare no que acontece entre o passo 500 e o 2000: o que o modelo ganha é ",
     { b: "estatística" },
-    ". Primeiro sílabas, depois palavras, depois concordância. Nenhuma regra de português foi escrita em lugar nenhum — só a conta de prever o próximo caractere, repetida duas mil vezes. A sessão acima ilustra o formato que ",
+    ". Primeiro sílabas, depois palavras, depois concordância. Nenhuma regra de português foi escrita em lugar nenhum: só a conta de prever o próximo caractere, repetida duas mil vezes. A sessão acima ilustra o formato que ",
     { code: "Trainer" },
     " imprime e segue a meta do projeto (perda de validação abaixo de 1,7); os números da sua máquina dependem do seu corpus.",
   ] as Rich,
@@ -132,7 +182,7 @@ export const idea = {
   lead: [
     "Ele responde a uma pergunta, repetidamente: ",
     { b: "dado o texto até aqui, qual é o próximo caractere?" },
-    " Tudo o que este projeto constrói — contagem, gradiente, atenção — são maneiras cada vez melhores de responder a essa única pergunta.",
+    " Contagem, gradiente e atenção são três maneiras cada vez melhores de responder a essa única pergunta.",
   ] as Rich,
   blocks: [
     {
@@ -158,7 +208,7 @@ export const idea = {
       note: [
         "Essa igualdade é só a regra do produto da probabilidade, sem nenhuma hipótese escondida. O que muda de um nível para o outro é ",
         { b: "quanto do passado" },
-        " cada modelo consegue de fato usar: o bigrama usa um caractere, o MLP usa oito, o Transformer usa sessenta e quatro — e decide sozinho a quais deles prestar atenção.",
+        " cada modelo consegue de fato usar: o bigrama usa um caractere, o MLP usa oito, e o Transformer usa sessenta e quatro, decidindo sozinho a quais deles prestar atenção.",
       ],
     },
     {
@@ -168,7 +218,7 @@ export const idea = {
     {
       kind: "p",
       runs: [
-        "Prever uma distribuição não é acertar ou errar: é apostar. A métrica precisa premiar quem deu probabilidade alta ao caractere que de fato veio, e punir quem deu quase nenhuma. A entropia cruzada faz exatamente isso — e é a mesma nos três níveis, o que permite compará-los.",
+        "Prever uma distribuição é apostar. A métrica precisa premiar quem deu probabilidade alta ao caractere que de fato veio, e punir quem deu quase nenhuma. A entropia cruzada faz exatamente isso, e é a mesma nos três níveis, o que permite compará-los.",
       ],
     },
     {
@@ -195,7 +245,7 @@ export const idea = {
         { code: "V" },
         " caracteres tem perda ",
         { code: "ln V" },
-        " — com V = 96, isso é 4,56. Todo nível deste projeto começa exatamente aí, e desce.",
+        ": com V = 96, isso é 4,56. Todo nível deste projeto começa exatamente aí, e desce.",
       ],
     },
   ] as Block[],
@@ -217,7 +267,7 @@ export const pipeline = {
       body: [
         "Um arquivo ",
         { code: ".txt" },
-        " em UTF-8. Cerca de 1 MB de português em domínio público é o alvo — quanto mais consistente o texto, mais legível a saída.",
+        " em UTF-8. Cerca de 1 MB de português em domínio público é o alvo. Quanto mais consistente o texto, mais legível a saída.",
       ] as Rich,
     },
     {
@@ -225,7 +275,7 @@ export const pipeline = {
       title: "Tokenizador",
       file: "data/CharTokenizer.java",
       body: [
-        "Cada caractere distinto vira um número. Os caracteres são ordenados por code point, então o mesmo corpus gera sempre os mesmos ids — uma bijeção, com ",
+        "Cada caractere distinto vira um número. Os caracteres são ordenados por code point, então o mesmo corpus gera sempre os mesmos ids. É uma bijeção, com ",
         { code: "decode(encode(t)) == t" },
         ".",
       ] as Rich,
@@ -241,7 +291,7 @@ export const pipeline = {
         { code: "y" },
         " é ",
         { code: "x" },
-        " deslocado de uma posição. Os primeiros 90% são treino, o resto é validação — cortados por posição, nunca embaralhados.",
+        " deslocado de uma posição. Os primeiros 90% são treino, o resto é validação, cortados por posição e nunca embaralhados.",
       ] as Rich,
     },
     {
@@ -269,7 +319,7 @@ export const pipeline = {
       title: "Amostragem",
       file: "generate/Sampler.java",
       body: [
-        "Softmax nos logits, temperatura, top-k, sorteio. O caractere sorteado entra no contexto e o laço recomeça — é isso que quer dizer ",
+        "Softmax nos logits, temperatura, top-k, sorteio. O caractere sorteado entra no contexto e o laço recomeça: é isso que quer dizer ",
         { b: "autoregressivo" },
         ".",
       ] as Rich,
@@ -281,16 +331,14 @@ export const pipeline = {
 
 export const levelsSection = {
   eyebrow: "Três níveis",
-  title: "Uma escada, não um salto",
+  title: "Uma escada de três degraus",
   lead: [
     "Cada degrau resolve uma limitação concreta do degrau anterior, e cada um tem que ",
     { b: "bater a perda" },
     " do anterior para justificar a própria complexidade. É por isso que o projeto começa por um modelo que qualquer pessoa entende em cinco minutos.",
   ] as Rich,
   footnote: [
-    "As perdas abaixo pressupõem um corpus real de cerca de 1 MB em português. Com o placeholder curto que vem no repositório, os três níveis parecem melhores do que são — o modelo decora em vez de generalizar, e é ",
-    { b: "isso" },
-    " que a perda de validação existe para denunciar.",
+    "As perdas abaixo pressupõem um corpus real de cerca de 1 MB em português. Com o placeholder curto que vem no repositório, os três níveis parecem melhores do que são: o modelo decora em vez de generalizar, e é isso que a perda de validação existe para denunciar.",
   ] as Rich,
 } as const;
 
@@ -309,7 +357,7 @@ export const demos = {
     title: "1. Tokenizador em nível de caractere",
     tag: "CharTokenizer.java",
     lead: [
-      "Escreva qualquer coisa. Cada caractere distinto do corpus recebeu um id na ordem do code point Unicode — e é ",
+      "Escreva qualquer coisa. Cada caractere distinto do corpus recebeu um id na ordem do code point Unicode, e é ",
       { b: "esse número" },
       ", não a letra, que entra na conta. Repare que o espaço e a quebra de linha também são caracteres, e que ",
       { code: "ã" },
@@ -322,7 +370,7 @@ export const demos = {
       { code: "itos" },
       " fazem no Java. Nível de caractere é a escolha didática do projeto: o vocabulário fica pequeno (dezenas de ids em vez de dezenas de milhares) e o modelo tem que aprender a ",
       { b: "soletrar" },
-      " — o que torna o progresso visível a olho nu.",
+      ", o que torna o progresso visível a olho nu.",
     ] as Rich,
   },
 
@@ -332,12 +380,10 @@ export const demos = {
     lead: [
       "Este botão faz o que ",
       { code: "fit()" },
-      " faz: uma passada pelo corpus contando pares. Depois gera texto sorteando da distribuição contada. É o modelo inteiro — ",
-      { b: "não há mais nada" },
-      " no nível 1.",
+      " faz: uma passada pelo corpus contando pares. Depois gera texto sorteando da distribuição contada. É o modelo inteiro: no nível 1 não há mais nada.",
     ] as Rich,
     foot: [
-      "O texto tem a textura do português — a proporção de vogais, os acentos em lugares plausíveis, o tamanho das palavras — e quase nenhuma palavra real. Essa distância entre ",
+      "O texto tem a textura do português (a proporção de vogais, os acentos em lugares plausíveis, o tamanho das palavras) e quase nenhuma palavra real. Essa distância entre ",
       { i: "parecer" },
       " e ",
       { i: "ser" },
@@ -345,7 +391,7 @@ export const demos = {
       { code: "α = 1" },
       " porque conta com um corpus de ~1 MB; aqui são poucos milhares de caracteres, e ",
       { code: "α·V" },
-      " passaria a pesar mais do que as contagens reais. Por isso o padrão desta demonstração é menor — e por isso o controle está à mostra: arraste-o para os dois extremos e veja a suavização deixar de proteger e passar a afogar.",
+      " passaria a pesar mais do que as contagens reais. Por isso o padrão desta demonstração é menor, e por isso o controle está à mostra: arraste-o para os dois extremos e veja a suavização deixar de proteger e passar a afogar.",
     ] as Rich,
   },
 
@@ -355,7 +401,7 @@ export const demos = {
     lead: [
       "A distribuição abaixo é real: são as probabilidades do próximo caractere depois de um ",
       { code: "a" },
-      ", contadas no mesmo corpus. Os dois controles não mudam o modelo — mudam apenas ",
+      ", contadas no mesmo corpus. Os dois controles não mudam o modelo; mudam apenas ",
       { b: "como se sorteia dele" },
       ".",
     ] as Rich,
@@ -379,7 +425,7 @@ export const demos = {
     foot: [
       "As células apagadas viram ",
       { code: "−∞" },
-      " antes do softmax, o que as leva a peso exatamente zero depois dele. Sem essa máscara, o modelo veria o caractere que deveria prever — a perda de treino despencaria e o modelo não aprenderia absolutamente nada útil. É o bug mais comum e mais silencioso da área.",
+      " antes do softmax, o que as leva a peso exatamente zero depois dele. Sem essa máscara, o modelo veria o caractere que deveria prever: a perda de treino despencaria, o modelo não aprenderia nada útil e nada no programa reclamaria.",
     ] as Rich,
   },
 } as const;
@@ -412,9 +458,7 @@ export const trust = {
     {
       title: "MlpGradCheckTest",
       body: [
-        "Confere ",
-        { b: "todos" },
-        " os gradientes derivados à mão do nível 2 — ",
+        "Confere todos os gradientes explícitos do nível 2 (",
         { code: "dC" },
         ", ",
         { code: "dW1" },
@@ -424,7 +468,7 @@ export const trust = {
         { code: "dW2" },
         ", ",
         { code: "db2" },
-        " — com erro abaixo de ",
+        "), com erro abaixo de ",
         { code: "1e-5" },
         ".",
       ] as Rich,
@@ -438,7 +482,7 @@ export const trust = {
     {
       title: "TensorGradCheckTest",
       body: [
-        "Confere mais de doze operações do autodiff isoladamente — ",
+        "Confere mais de doze operações do autodiff isoladamente: ",
         { code: "matmul" },
         ", ",
         { code: "softmaxRows" },
@@ -473,7 +517,7 @@ export const roadmap = {
   eyebrow: "Roteiro de estudo",
   title: "A ordem em que eu leria os arquivos",
   lead: [
-    "O repositório tem treze classes; estas dez são o caminho. Lidas nesta ordem, cada uma só usa o que a anterior já explicou — e nenhuma exige que você acredite em nada por enquanto.",
+    "O repositório tem treze classes; estas dez são o caminho. Lidas nesta ordem, cada uma só usa o que a anterior já explicou, e nenhuma exige que você acredite em nada por enquanto.",
   ] as Rich,
   items: [
     {
@@ -506,11 +550,11 @@ export const roadmap = {
     },
     {
       file: "train/Trainer.java",
-      why: "O laço: sorteia lote, zera gradientes, forward+backward, um passo. Poucas dezenas de linhas que valem por um capítulo.",
+      why: "O laço: sorteia lote, zera gradientes, forward+backward, um passo. O treino inteiro cabe em poucas dezenas de linhas.",
     },
     {
       file: "core/Tensor.java",
-      why: "O autodiff. A classe mais densa do projeto — leia depois de ter derivado os gradientes do MLP à mão.",
+      why: "O autodiff. A classe mais densa do projeto: leia depois de ter acompanhado a derivação dos gradientes do MLP.",
     },
     {
       file: "model/TransformerModel.java",
@@ -519,29 +563,97 @@ export const roadmap = {
   ],
 } as const;
 
+/* ------------------------------------------------------------------ de onde vem a ideia */
+
+// A moldura do projeto inteiro, e a razão de as restrições da seção seguinte existirem.
+//
+// Um cuidado sobre o que esta seção afirma: o MINIX é citado como **tradição**, não como
+// origem. Nenhuma linha deste repositório deriva dele, e Tanenbaum nunca escreveu sobre
+// modelos de linguagem — o que se herda é o método de ensino, e é isso que o texto diz,
+// com essas palavras. A linhagem técnica de verdade é outra, e está nos dois artigos
+// citados abaixo, os mesmos que o Javadoc das classes já cita.
+export const lineage = {
+  eyebrow: "De onde vem a ideia",
+  title: "Um MINIX para modelos de linguagem",
+  lead: ["A aposta deste projeto já deu certo antes, em outra área da computação."] as Rich,
+  blocks: [
+    {
+      kind: "p",
+      runs: [
+        "Em 1987, Andrew Tanenbaum publicou ",
+        { i: "Operating Systems: Design and Implementation" },
+        " com um sistema operacional inteiro junto — o ",
+        { b: "MINIX" },
+        " — e o código-fonte completo impresso no apêndice do livro. A aposta era que um aluno aprende mais lendo um sistema operacional inteiro do que lendo sobre um. Quatro anos depois, Linus Torvalds escreveu a primeira versão do Linux numa máquina rodando MINIX e a anunciou no grupo ",
+        { code: "comp.os.minix" },
+        ".",
+      ],
+    },
+    {
+      kind: "p",
+      runs: [
+        "Modelos de linguagem estão hoje onde os sistemas operacionais estavam então: todo mundo usa, quase ninguém leu um por dentro. Os que estão em produção têm bilhões de parâmetros e dependem de bibliotecas grandes demais para alguém ler de ponta a ponta. Este tem ",
+        { b: "treze arquivos e cerca de 3.200 linhas" },
+        ", nenhuma dependência além do JUnit, e treina e gera texto. Dá para ler inteiro num fim de semana.",
+      ],
+    },
+    {
+      kind: "note",
+      tone: "key",
+      title: "O que se herda do MINIX é método, não código",
+      runs: [
+        "Nenhuma linha daqui vem do MINIX. O que este projeto copia dele são três decisões: ser ",
+        { b: "completo" },
+        ", no sentido de treinar e gerar texto de verdade; ser ",
+        { b: "pequeno de propósito" },
+        "; e manter a explicação ",
+        { b: "no Javadoc da classe" },
+        ", ao lado da linha que ela explica.",
+      ],
+    },
+    { kind: "h", text: "A linhagem técnica" },
+    {
+      kind: "p",
+      runs: [
+        "A matemática vem de dois artigos. ",
+        { b: "Bengio et al. (2003)" },
+        ", ",
+        { i: "A Neural Probabilistic Language Model" },
+        ", é a arquitetura do nível 2 e o artigo que o Javadoc de ",
+        { code: "MlpModel" },
+        " cita; foi ele que popularizou a ideia de embeddings aprendidos. ",
+        { b: "Vaswani et al. (2017)" },
+        ", ",
+        { i: "Attention Is All You Need" },
+        ", é o nível 3. Os três degraus seguem a ordem em que essas ideias apareceram: primeiro a contagem, depois a rede rasa, depois a atenção.",
+      ],
+    },
+  ] as Block[],
+};
+
 /* ------------------------------------------------------------------ restrições do projeto */
 
 export const rules = {
   eyebrow: "As regras do jogo",
   title: "O que este projeto se proíbe de fazer",
   lead: [
-    "As restrições não são estética: cada uma existe para que o código continue legível por quem está aprendendo.",
+    "Cada restrição abaixo existe para que o código continue legível por quem está aprendendo.",
   ] as Rich,
   items: [
     {
       ico: "🚫",
       title: "Nenhuma biblioteca de ML",
       body: [
-        "Nada de DJL, ND4J, DL4J ou TensorFlow. Toda a álgebra linear é escrita à mão com ",
+        "Nada de DJL, ND4J, DL4J ou TensorFlow. Toda a álgebra linear é implementada aqui mesmo, com ",
         { code: "double[][]" },
-        " — porque uma chamada de biblioteca é exatamente o ponto em que o aprendizado pararia.",
+        ", porque uma chamada de biblioteca é exatamente o ponto em que o aprendizado pararia.",
       ] as Rich,
     },
     {
       ico: "🧪",
       title: "Uma dependência, só nos testes",
       body: [
-        "JUnit 5, e mais nada. O ",
+        "JUnit 6, e mais nada. O ",
         { code: "pom.xml" },
         " cabe numa tela, e ",
         { code: "mvn test" },
@@ -552,7 +664,7 @@ export const rules = {
       ico: "📐",
       title: "A matemática mora no código",
       body: [
-        "Cada classe traz, no Javadoc, a fórmula que ela implementa. O comentário e a linha de código ficam a centímetros um do outro — que é a única distância em que os dois se mantêm sincronizados.",
+        "Cada classe traz, no Javadoc, a fórmula que ela implementa. O comentário e a linha de código ficam a centímetros um do outro, que é a única distância em que os dois se mantêm sincronizados.",
       ] as Rich,
     },
     {
@@ -574,14 +686,14 @@ export const rules = {
         { code: "Random" },
         " com semente explícita (",
         { code: "--seed" },
-        "). Mesma semente, mesmo corpus, mesmo texto — o que torna um experimento comparável com o anterior.",
+        "). Mesma semente, mesmo corpus, mesmo texto, o que torna um experimento comparável com o anterior.",
       ] as Rich,
     },
     {
       ico: "🔍",
       title: "Nada de peso mágico",
       body: [
-        "Os modelos treináveis não persistem pesos: cada execução treina do zero. É mais lento e é honesto — não existe um arquivo binário fazendo o trabalho que o código deveria mostrar.",
+        "Os modelos treináveis não persistem pesos: cada execução treina do zero. Custa tempo, e em troca não existe nenhum arquivo binário fazendo o trabalho que o código deveria mostrar.",
       ] as Rich,
     },
   ],
@@ -592,7 +704,7 @@ export const rules = {
 export const closing = {
   title: "Comece pelo degrau mais baixo",
   body: [
-    "O nível 1 não tem gradiente, não tem matriz de pesos e não tem laço de treino — e ainda assim já é um modelo de linguagem completo, com tokenização, probabilidade, perda e amostragem. Entendido ele, os outros dois são a mesma ideia com mais álgebra.",
+    "O nível 1 não tem gradiente, matriz de pesos nem laço de treino, e ainda assim já é um modelo de linguagem completo, com tokenização, probabilidade, perda e amostragem. Entendido ele, os outros dois são a mesma ideia com mais álgebra.",
   ] as Rich,
   body2: [
     "Se você preferir começar pelas mãos, ",

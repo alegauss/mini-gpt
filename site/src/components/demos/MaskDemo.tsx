@@ -87,12 +87,12 @@ export function MaskDemo() {
             </p>
             <p>
               Repare na posição <b>0</b>: ela só pode olhar para si mesma. É o caso em que a atenção não
-              tem nada a somar — e é por isso que o começo de qualquer geração é o pedaço mais frágil do
+              tem nada a somar, e é por isso que o começo de qualquer geração é o pedaço mais frágil do
               texto.
             </p>
             <p>
-              E repare que o triângulo cheio é exatamente o desenho do logotipo deste site. Não é
-              coincidência: é a figura que o projeto inteiro existe para explicar.
+              E repare que o triângulo cheio é exatamente o desenho do logotipo deste site: é a figura
+              que o projeto inteiro existe para explicar.
             </p>
           </div>
         </div>

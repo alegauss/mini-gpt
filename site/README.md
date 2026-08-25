@@ -1,4 +1,4 @@
-# site — o material didático do mini-gpt-java
+# site — o material didático do Mini GPT
 
 O site público do projeto, em português do Brasil, servido em
 <https://alegauss.github.io/mini-gpt/>.

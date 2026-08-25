@@ -2,6 +2,7 @@
 // execução. Mesmo formato dos níveis — blocos, não marcação.
 
 import type { Block, Rich } from "./content-types";
+import { productName } from "./site-content";
 
 /* ================================================================== /matematica */
 
@@ -15,16 +16,16 @@ export type GlossItem = {
 };
 
 export const mathPage = {
-  title: "A matemática do mini-gpt-java",
+  title: `A matemática do ${productName}`,
   description:
-    "O formulário completo do projeto: notação, softmax estável, entropia cruzada, perplexidade, regra da cadeia, verificação por diferenças finitas, Adam, LayerNorm, atenção, embeddings, temperatura e top-k — cada fórmula com a legenda de todos os símbolos.",
-  ogTitle: "A matemática do mini-gpt-java",
+    "O formulário completo do projeto: notação, softmax estável, entropia cruzada, perplexidade, regra da cadeia, verificação por diferenças finitas, Adam, LayerNorm, atenção, embeddings, temperatura e top-k, cada fórmula com a legenda de todos os símbolos.",
+  ogTitle: `A matemática do ${productName}`,
   ogDescription:
     "Doze verbetes, cada fórmula com a legenda de cada símbolo e o arquivo Java onde ela é implementada.",
   lead: [
     "Um verbete por conceito, em ordem de dependência: cada um só usa o que os anteriores já definiram. Toda fórmula vem com a legenda de ",
     { b: "todos" },
-    " os símbolos e com o arquivo onde ela é implementada — porque uma equação sem legenda é uma parede, e a página existe justamente para quem ainda não reconhece os símbolos.",
+    " os símbolos e com o arquivo onde ela é implementada. Uma equação sem legenda é uma parede, e a página existe justamente para quem ainda não reconhece os símbolos.",
   ] as Rich,
 
   items: [
@@ -54,7 +55,7 @@ export const mathPage = {
           terms: [
             { sym: "V", def: ["quantos caracteres distintos o corpus tem. Um corpus em português costuma dar entre 70 e 110"] },
             { sym: "T", def: ["quantos caracteres o modelo enxerga: 1 no bigrama, 8 no MLP, 64 no Transformer"] },
-            { sym: "B", def: ["quantos exemplos entram num passo de treino — 32 no MLP, 16 no Transformer"] },
+            { sym: "B", def: ["quantos exemplos entram num passo de treino: 32 no MLP, 16 no Transformer"] },
           ],
           note: [
             "A regra que salva tempo: ",
@@ -67,7 +68,7 @@ export const mathPage = {
             { code: "dW2" },
             " é ",
             { code: "(H × V)" },
-            " — e isso já determina de que lado cada transposta entra.",
+            ", e isso já determina de que lado cada transposta entra.",
           ],
         },
       ],
@@ -75,7 +76,7 @@ export const mathPage = {
     {
       id: "softmax",
       title: "Softmax",
-      why: "Como transformar números quaisquer em probabilidades — sem estourar o double.",
+      why: "Como transformar números quaisquer em probabilidades, sem estourar o double.",
       blocks: [
         {
           kind: "p",
@@ -90,7 +91,7 @@ export const mathPage = {
           eq: ["softmax(z)ᵢ  =  e^{zᵢ − max z}  /  Σⱼ e^{zⱼ − max z}"],
           terms: [
             { sym: "zᵢ", def: ["o logit do caractere ", { code: "i" }] },
-            { sym: "max z", def: ["o maior logit — subtraído de todos antes de exponenciar"] },
+            { sym: "max z", def: ["o maior logit, subtraído de todos antes de exponenciar"] },
           ],
           note: [
             "Subtrair o máximo ",
@@ -122,7 +123,7 @@ export const mathPage = {
           note: [
             "É a surpresa média do modelo. Zero seria certeza perfeita; ",
             { code: "ln V" },
-            " é o chute uniforme. Como a média é por caractere, a perda de um bigrama e a de um Transformer são diretamente comparáveis — que é justamente o que permite dizer se um nível se pagou.",
+            " é o chute uniforme. Como a média é por caractere, a perda de um bigrama e a de um Transformer são diretamente comparáveis, que é justamente o que permite dizer se um nível se pagou.",
           ],
         },
         {
@@ -149,7 +150,7 @@ export const mathPage = {
           eq: ["PP  =  e^L"],
           terms: [{ sym: "L", def: ["a entropia cruzada em nats"] }],
           note: [
-            "Leia como \"entre quantas opções igualmente prováveis o modelo está efetivamente escolhendo\". Perda 4,56 com V = 96 dá perplexidade 96 — chute puro. Perda 1,7 dá cerca de 5,5: o modelo reduziu 96 candidatos a menos de seis.",
+            "Leia como \"entre quantas opções igualmente prováveis o modelo está efetivamente escolhendo\". Perda 4,56 com V = 96 dá perplexidade 96, que é o chute puro. Perda 1,7 dá cerca de 5,5: o modelo reduziu 96 candidatos a menos de seis.",
           ],
         },
       ],
@@ -163,13 +164,13 @@ export const mathPage = {
           kind: "formula",
           eq: ["∂L/∂x  =  (∂L/∂y) · (∂y/∂x)"],
           terms: [
-            { sym: "∂L/∂y", def: ["o gradiente que chegou da camada de cima — o que o resto da rede pede"] },
+            { sym: "∂L/∂y", def: ["o gradiente que chegou da camada de cima: o que o resto da rede pede"] },
             { sym: "∂y/∂x", def: ["a derivada local desta operação, a única coisa que ela precisa saber"] },
           ],
           note: [
             "Cada camada faz uma coisa só: recebe o gradiente da saída e devolve o da entrada. É o que torna o backward ",
             { b: "modular" },
-            " — e é literalmente a estrutura do ",
+            ", e é literalmente a estrutura do ",
             { code: "Tensor" },
             ", onde cada operação registra a própria derivada local e mais nada.",
           ],
@@ -222,7 +223,7 @@ export const mathPage = {
             { code: "C" },
             " de forma ",
             { code: "(V × E)" },
-            " em que cada caractere ocupa uma linha — um vetor que o treino ajusta livremente.",
+            " em que cada caractere ocupa uma linha: um vetor que o treino ajusta livremente.",
           ],
         },
         {
@@ -230,7 +231,7 @@ export const mathPage = {
           eq: ["embed(id)  =  C[id]        (uma linha, E números)"],
           terms: [{ sym: "E", def: ["a dimensão do vetor: 24 no MLP, 128 no Transformer"] }],
           note: [
-            "No backward, o gradiente volta apenas para as linhas que foram usadas — e ",
+            "No backward, o gradiente volta apenas para as linhas que foram usadas, e volta ",
             { b: "somado" },
             ", porque o mesmo caractere pode aparecer várias vezes na mesma janela (o scatter-add). Ao fim do treino, vogais tendem a ficar próximas de vogais: ninguém programou isso, foi a perda que empurrou.",
           ],
@@ -253,7 +254,7 @@ export const mathPage = {
             { sym: "g", def: ["o gradiente do passo atual"] },
             { sym: "m", def: ["o primeiro momento: a média móvel dos gradientes. Suaviza a direção, como inércia"] },
             { sym: "v", def: ["o segundo momento: a média dos gradientes ao quadrado. Estima a ", { b: "escala" }, " de cada coordenada"] },
-            { sym: "β₁, β₂", def: ["os decaimentos, 0,9 e 0,999 — os valores usuais, e os do projeto"] },
+            { sym: "β₁, β₂", def: ["os decaimentos, 0,9 e 0,999: os valores usuais, e os do projeto"] },
             { sym: "t", def: ["o número do passo, usado só na correção de viés"] },
           ],
           note: [
@@ -289,12 +290,12 @@ export const mathPage = {
           kind: "formula",
           eq: ["y  =  γ · (x − μ) / √(σ² + ε)  +  β"],
           terms: [
-            { sym: "μ, σ²", def: ["média e variância calculadas ", { b: "dentro de cada posição" }, ", sobre as E dimensões — nunca sobre o lote"] },
+            { sym: "μ, σ²", def: ["média e variância calculadas ", { b: "dentro de cada posição" }, ", sobre as E dimensões, e nunca sobre o lote"] },
             { sym: "γ, β", def: ["escala e deslocamento aprendidos, um par por dimensão: a rede pode desfazer a normalização se lhe convier"] },
             { sym: "ε", def: [{ code: "1e-5" }, ", para não dividir por zero"] },
           ],
           note: [
-            "Normalizar por posição, e não pelo lote, é o que faz o LayerNorm funcionar igual com lote de 16 ou de 1 — importante porque a geração processa uma sequência de cada vez.",
+            "Normalizar por posição, e não pelo lote, é o que faz o LayerNorm funcionar igual com lote de 16 ou de 1, o que importa porque a geração processa uma sequência de cada vez.",
           ],
         },
       ],
@@ -317,7 +318,7 @@ export const mathPage = {
           note: [
             "A saída de cada posição é a média ponderada dos ",
             { code: "V" },
-            " das posições que ela decidiu olhar — e essa decisão é recalculada a cada passo, a partir do conteúdo. É a diferença entre uma janela fixa e um foco.",
+            " das posições que ela decidiu olhar, e essa decisão é recalculada a cada passo, a partir do conteúdo.",
           ],
         },
       ],
@@ -344,7 +345,7 @@ export const mathPage = {
             { code: "ln p'ᵢ = (1/τ)·ln pᵢ" },
             ", seguido de softmax) por estabilidade. O ",
             { b: "top-k" },
-            " é ortogonal: mantém os k mais prováveis, zera o resto e renormaliza — cortando a cauda de opções individualmente improváveis que, somadas, ainda ganham sorteios.",
+            " é ortogonal: mantém os k mais prováveis, zera o resto e renormaliza, o que corta a cauda de opções individualmente improváveis que, somadas, ainda ganham sorteios.",
           ],
         },
         {
@@ -352,7 +353,7 @@ export const mathPage = {
           tone: "warn",
           title: "Nenhum dos dois melhora a perda",
           runs: [
-            "Perda é medida sobre a distribuição do modelo, não sobre o sorteio. Temperatura e top-k mudam apenas o texto que sai — são decisões de ",
+            "Perda é medida sobre a distribuição do modelo, não sobre o sorteio. Temperatura e top-k mudam apenas o texto que sai: são decisões de ",
             { b: "apresentação" },
             ", e é útil não confundi-las com qualidade de modelo.",
           ],
@@ -371,7 +372,7 @@ export const mathPage = {
             { code: "B" },
             " exemplos dá uma estimativa ",
             { b: "ruidosa e barata" },
-            " do mesmo gradiente — e o ruído até ajuda, empurrando o otimizador para fora de mínimos ruins.",
+            " do mesmo gradiente, e o ruído até ajuda, empurrando o otimizador para fora de mínimos ruins.",
           ],
         },
         {
@@ -388,21 +389,34 @@ export const mathPage = {
 /* ================================================================== /como-rodar */
 
 export const runPage = {
-  title: "Como rodar o mini-gpt-java na sua máquina",
+  title: `Como rodar o ${productName} na sua máquina`,
   description:
     "Pré-requisitos, os quatro comandos que importam, a tabela completa de opções da CLI, como obter um corpus de ~1 MB em português de domínio público, e o que esperar de cada nível.",
-  ogTitle: "Como rodar o mini-gpt-java",
+  ogTitle: `Como rodar o ${productName}`,
   ogDescription:
-    "JDK 17, Maven e quatro comandos. Mais a tabela de opções, o guia de corpus e o que esperar de cada nível.",
+    "JDK 21, Maven e quatro comandos. Mais a tabela de opções, o guia de corpus e o que esperar de cada nível.",
   lead: [
-    "Nenhuma GPU, nenhuma conta em nenhum serviço, nenhum download de modelo. ",
-    { b: "JDK 17 e Maven" },
-    " — e o primeiro texto gerado sai em menos de um minuto.",
+    "Nenhuma GPU, nenhuma conta em nenhum serviço, nenhum download de modelo: bastam ",
+    { b: "JDK 21 e Maven" },
+    ". O primeiro texto gerado sai em menos de um minuto.",
   ] as Rich,
 
   prereqs: [
-    { title: "JDK 17 ou mais novo", body: ["Qualquer distribuição: Temurin, Zulu, Corretto, Oracle. Confira com ", { code: "java -version" }, "."] as Rich },
-    { title: "Maven 3.8+", body: ["Confira com ", { code: "mvn -v" }, ". É o que baixa o JUnit e empacota o JAR."] as Rich },
+    { title: "JDK 21 ou mais novo", body: ["Qualquer distribuição: Temurin, Zulu, Corretto, Oracle. Confira com ", { code: "java -version" }, ". O build recusa JDK mais antigo, com uma mensagem dizendo isso."] as Rich },
+    {
+      title: "Maven 3.9+, ou nada",
+      body: [
+        "Confira com ",
+        { code: "mvn -v" },
+        ". Se preferir não instalar, o repositório traz o wrapper: troque ",
+        { code: "mvn" },
+        " por ",
+        { code: "./mvnw" },
+        " (ou ",
+        { code: "mvnw.cmd" },
+        " no Windows) em qualquer comando desta página, e ele baixa a versão certa sozinho.",
+      ] as Rich,
+    },
     { title: "Uns 2 GB de RAM livres", body: ["O Transformer com os padrões cabe folgado. O que consome tempo é a CPU, não a memória."] as Rich },
   ],
 
@@ -424,7 +438,7 @@ export const runPage = {
     },
     {
       title: "Suba os degraus",
-      body: ["O MLP treina em segundos. O Transformer leva cerca de 25 minutos com os padrões — comece com ", { code: "--steps 200" }, " se quiser só ver o formato da saída."] as Rich,
+      body: ["O MLP treina em segundos. O Transformer leva cerca de 25 minutos com os padrões; comece com ", { code: "--steps 200" }, " se quiser só ver o formato da saída."] as Rich,
       cmd: "java -jar target/mini-gpt-java.jar train --model mlp --steps 3000",
     },
   ],
@@ -435,7 +449,7 @@ export const runPage = {
       cmd: 'java -jar target/mini-gpt-java.jar generate --model mlp --prompt "O menino " --length 200 --temp 0.8 --topk 5',
     },
     {
-      why: ["Os três níveis lado a lado, no mesmo corpus e com o mesmo prompt. É o comando que transforma o projeto inteiro numa única tela."] as Rich,
+      why: ["Os três níveis lado a lado, no mesmo corpus e com o mesmo prompt, numa única saída."] as Rich,
       cmd: 'java -jar target/mini-gpt-java.jar compare --prompt "O menino " --steps 400',
     },
     {
@@ -472,7 +486,7 @@ export const runPage = {
           { code: "data/corpus.txt" },
           " que vem no repositório é um ",
           { b: "placeholder curto" },
-          ": serve para o pipeline rodar assim que você clona, e é pequeno demais para um bom modelo. Com ele, os três níveis parecem melhores do que são — decoram em vez de generalizar.",
+          ": ele existe para o pipeline rodar assim que você clona, e é pequeno demais para um bom modelo. Com ele, os três níveis parecem melhores do que são, porque decoram em vez de generalizar.",
         ],
       },
       {
@@ -516,7 +530,7 @@ export const runPage = {
       { code: "loss_val" },
       " e ",
       { code: "tempo" },
-      ", e a cada 500 passos gera uma amostra de 100 caracteres — que é como se vê o texto sair do ruído.",
+      ", e a cada 500 passos gera uma amostra de 100 caracteres, que é como se vê o texto sair do ruído.",
     ] as Rich,
   },
 
@@ -527,7 +541,7 @@ export const runPage = {
     },
     {
       title: "O Transformer está lento demais",
-      body: ["É esperado: são cerca de 25 minutos para 2000 passos numa CPU comum. Para experimentar, use ", { code: "--steps 200" }, " ou ", { code: "--context 16" }, " — a atenção é quadrática no contexto."] as Rich,
+      body: ["É esperado: são cerca de 25 minutos para 2000 passos numa CPU comum. Para experimentar, use ", { code: "--steps 200" }, " ou ", { code: "--context 16" }, ", já que a atenção é quadrática no contexto."] as Rich,
     },
     {
       title: "A perda de validação parou de cair",
@@ -535,7 +549,7 @@ export const runPage = {
     },
     {
       title: "Textos diferentes a cada execução",
-      body: ["Todo sorteio passa por ", { code: "--seed" }, ". Fixe a semente para comparar dois experimentos — sem isso, você está medindo o ruído do sorteio junto com o efeito da mudança."] as Rich,
+      body: ["Todo sorteio passa por ", { code: "--seed" }, ". Fixe a semente para comparar dois experimentos; sem isso, você está medindo o ruído do sorteio junto com o efeito da mudança."] as Rich,
     },
   ],
 } as const;

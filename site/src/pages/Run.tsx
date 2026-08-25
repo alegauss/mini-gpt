@@ -99,8 +99,8 @@ export function RunPage() {
             </table>
           </div>
           <p className="tbl-note">
-            Os modelos <code>mlp</code> e <code>transformer</code> treinam do zero a cada execução — o
-            projeto não persiste pesos —, por isso <code>generate</code> e <code>compare</code> incluem
+            Os modelos <code>mlp</code> e <code>transformer</code> treinam do zero a cada execução (o
+            projeto não persiste pesos), por isso <code>generate</code> e <code>compare</code> incluem
             uma fase de treino antes de gerar.
           </p>
 

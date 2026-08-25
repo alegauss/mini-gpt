@@ -1,6 +1,6 @@
 import type { FigureName } from "../../lib/content-types";
 
-// As figuras do site, desenhadas à mão em SVG.
+// As figuras do site, em SVG e sem biblioteca de gráficos.
 //
 // Todas usam os tokens de cor da folha de estilo (`var(--line)`, `var(--accent)`, …), o
 // que é o único jeito de um desenho embutido acompanhar o tema em vez de brilhar no claro

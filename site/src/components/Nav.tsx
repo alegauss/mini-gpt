@@ -1,14 +1,14 @@
-import { navLinks, page, parentUrl, repoUrl } from "../lib/site-content";
+import { navLinks, page, parentUrl, productName, repoUrl } from "../lib/site-content";
 import { ThemeToggle } from "./ui/ThemeToggle";
 
 export function Nav() {
   return (
-    <nav>
+    <nav className="site-nav">
       <div className="wrap">
         <div className="nav-left">
           <a className="brand" href={page("/")}>
             <img src={`${page("/")}logo.svg`} alt="" width={30} height={30} />
-            mini-gpt-java
+            {productName}
           </a>
           <a className="parent" href={parentUrl} title="alegauss — pequenas ferramentas">
             <span className="pre">parte de</span>

@@ -1,5 +1,5 @@
 /* ============================================================================
-   mini-gpt-java — folha de estilo unica.
+   Mini GPT — folha de estilo única.
 
    A paleta é clara por padrão em :root; os valores escuros são redefinidos sob
    prefers-color-scheme (protegidos, para que uma escolha explícita de tema claro
@@ -226,8 +226,14 @@ body::before {
     linear-gradient(180deg, var(--bg), var(--bg-2));
 }
 
-/* ---------- navegação ---------- */
-nav {
+/* ---------- navegação ----------
+   A classe existe porque estas regras já foram escritas como `nav { … }`, e nesta página
+   há três elementos <nav>: o cabeçalho, o índice do formulário de matemática e o
+   anterior/próximo no pé das páginas internas. Um seletor de elemento grudava os três no
+   topo da janela com z-index 50, e o índice passava por cima do cabeçalho. Marcação
+   semântica correta não é motivo para ser vestida pelo cromo do site — só o cabeçalho é o
+   cabeçalho. */
+.site-nav {
   position: sticky;
   top: 0;
   z-index: 50;
@@ -236,7 +242,7 @@ nav {
   background: var(--nav-bg);
   border-bottom: 1px solid var(--line);
 }
-nav .wrap {
+.site-nav .wrap {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -531,6 +537,7 @@ nav .wrap {
   -webkit-mask-image: linear-gradient(to bottom, transparent, #000 42%, #000 74%, transparent);
   mask-image: linear-gradient(to bottom, transparent, #000 42%, #000 74%, transparent);
   font-family: var(--mono);
+  -webkit-user-select: none;
   user-select: none;
 }
 /* `max-content` é o que faz a costura fechar: o deslize é de 50% da LARGURA DO CONTEÚDO,
@@ -597,6 +604,9 @@ nav .wrap {
   }
   .stream--footer {
     height: 100px;
+  }
+  footer {
+    padding-top: 122px;
   }
 }
 
@@ -1946,12 +1956,17 @@ input[type="range"] {
 .page-hero .lead b {
   color: var(--text);
 }
+/* `block` com largura pelo conteúdo, e não `inline-block`: o kicker logo abaixo é
+   `inline-flex`, então os dois são de nível inline e caem na mesma linha, encostados. O
+   link de voltar tem que ocupar a própria linha; o `width` mantém a área clicável do
+   tamanho do texto em vez de esticá-la pela coluna inteira. */
 .back-link {
-  display: inline-block;
+  display: block;
+  width: fit-content;
   color: var(--accent);
   font-size: 0.9rem;
   font-weight: 600;
-  margin-bottom: 18px;
+  margin-bottom: 14px;
 }
 .back-link:hover {
   color: var(--accent-strong);
@@ -2071,8 +2086,11 @@ input[type="range"] {
 }
 
 /* ---------- rodapé ---------- */
+/* O padding do topo tem que ser maior que a altura da faixa (`.stream--footer`, 130px):
+   o rio abre o rodapé, e com folga menor a última faixa de caracteres passa por cima da
+   linha da marca. As duas medidas andam juntas — mexer numa exige mexer na outra. */
 footer {
-  padding: 92px 0 36px;
+  padding: 152px 0 36px;
   margin-top: 30px;
   position: relative;
   overflow: hidden;
@@ -2111,6 +2129,114 @@ footer .wrap {
 .foot-links a:hover {
   color: var(--accent);
 }
+/* ---------- patrocínio ---------- */
+.sponsor {
+  margin-top: 30px;
+  padding-top: 26px;
+  border-top: 1px solid var(--line);
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+}
+/* A placa branca não é decoração: as marcas foram desenhadas para fundo claro, e é o que
+   permite reproduzi-las como publicadas mesmo com o site no tema escuro. */
+.sponsor-mark {
+  width: 42px;
+  height: 42px;
+  border-radius: 10px;
+  background: #fff;
+  padding: 3px;
+  flex: none;
+}
+.sponsor-body {
+  min-width: 0;
+}
+.sponsor-label {
+  display: block;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted-2);
+}
+.sponsor-name {
+  display: block;
+  margin-top: 2px;
+  font-weight: 800;
+  font-size: 1.02rem;
+  letter-spacing: -0.01em;
+  color: var(--text);
+}
+.sponsor-name:hover {
+  color: var(--accent);
+}
+.sponsor-body p {
+  margin-top: 6px;
+  max-width: 640px;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+.sponsor-body p a {
+  color: var(--accent);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+.sponsor-products {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 14px;
+}
+.sponsor-product {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 9px 14px 9px 10px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--panel);
+  color: var(--text);
+  transition: border-color 0.2s, transform 0.15s ease;
+}
+.sponsor-product:hover {
+  border-color: var(--accent);
+  transform: translateY(-2px);
+}
+.sponsor-product img {
+  width: 28px;
+  height: 28px;
+  border-radius: 7px;
+  background: #fff;
+  padding: 2px;
+  flex: none;
+}
+.sponsor-product b {
+  display: block;
+  font-size: 0.86rem;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+}
+.sponsor-product small {
+  display: block;
+  max-width: 290px;
+  color: var(--muted-2);
+  font-size: 0.76rem;
+  line-height: 1.45;
+}
+@media (max-width: 620px) {
+  .sponsor {
+    flex-direction: column;
+  }
+  .sponsor-product {
+    width: 100%;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .sponsor-product:hover {
+    transform: none;
+  }
+}
+
 .disclaimer {
   color: var(--muted-2);
   font-size: 0.8rem;

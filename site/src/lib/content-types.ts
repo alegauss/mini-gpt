@@ -19,7 +19,7 @@ export type Run =
 
 export type Rich = Run[];
 
-/** As figuras SVG desenhadas à mão, escolhidas por nome a partir do conteúdo. */
+/** As figuras SVG do projeto, escolhidas por nome a partir do conteúdo. */
 export type FigureName = "pipeline" | "mlp" | "bloco" | "atencao";
 
 export type Block =

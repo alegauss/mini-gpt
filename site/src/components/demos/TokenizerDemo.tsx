@@ -82,7 +82,7 @@ export function TokenizerDemo() {
           <div className="note note--warn" style={{ marginTop: "16px" }}>
             <strong className="note-title">Um caractere que o corpus não tem</strong>
             Os quadrinhos com <code>—</code> não existem no vocabulário construído a partir deste corpus,
-            então não há id para eles — e o modelo literalmente não consegue representá-los. É o que
+            então não há id para eles, e o modelo não consegue representá-los. É o que
             acontece de verdade quando se treina num texto sem acentuação e depois se pede para gerar
             português correto: a informação nunca esteve lá.
           </div>

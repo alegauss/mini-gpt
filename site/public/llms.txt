@@ -1,4 +1,4 @@
-# mini-gpt-java
+# Mini GPT
 
 > Um modelo de linguagem generativo em nível de caractere, treinado do zero em Java puro,
 > sem nenhuma biblioteca de machine learning. Projeto didático: cada classe explica a
@@ -9,8 +9,8 @@ Site: https://alegauss.github.io/mini-gpt/
 
 ## O que é
 
-Java 17+, Maven, e uma única dependência (JUnit 5, só nos testes). Toda a álgebra linear é
-escrita à mão com `double[][]`. Nada de DJL, ND4J, DL4J ou TensorFlow.
+Java 21+, Maven 3.9+, e uma única dependência (JUnit 6, só nos testes). Toda a álgebra linear é
+implementada dentro do projeto, com `double[][]`. Nada de DJL, ND4J, DL4J ou TensorFlow.
 
 ## Os três níveis
 
@@ -18,7 +18,7 @@ escrita à mão com `double[][]`. Nada de DJL, ND4J, DL4J ou TensorFlow.
   suavização de Laplace. Sem gradiente. Ensina tokenização, máxima verossimilhança,
   entropia cruzada, temperatura e top-k.
 - Nível 2 — MLP (`MlpModel`): janela fixa de 8 caracteres, embedding → concatenação →
-  camada linear → tanh → saída. Todos os gradientes derivados à mão e comentados passo a
+  camada linear → tanh → saída. Todos os gradientes derivados explicitamente, sem autodiff, e comentados passo a
   passo. Ensina backpropagation, a derivada da tanh, o gradiente de softmax + entropia
   cruzada (`P − onehot`) e o scatter-add nos embeddings.
 - Nível 3 — Transformer (`TransformerModel`): um GPT em miniatura com autodiff reverso

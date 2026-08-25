@@ -5,6 +5,7 @@
 // página, nem com página e sem título — porque é tudo o mesmo objeto.
 
 import type { Block, Rich } from "./content-types";
+import { productName } from "./site-content";
 
 export type Exercise = { id: string; title: string; body: Rich };
 
@@ -61,16 +62,16 @@ const bigrama: Level = {
     { label: "Perda esperada", value: "~2–3 nats" },
   ],
 
-  title: "Nível 1: Bigrama — mini-gpt-java",
+  title: `Nível 1: Bigrama — ${productName}`,
   description:
     "O modelo de linguagem mais simples que ainda é um modelo de linguagem: conta pares de caracteres, normaliza com suavização de Laplace e amostra. Sem gradiente, sem pesos, sem treino iterativo.",
   ogTitle: "Nível 1 — Bigrama",
   ogDescription:
-    "Máxima verossimilhança por contagem, suavização de Laplace e entropia cruzada. O degrau mais baixo do mini-gpt-java, explicado linha a linha.",
+    "Máxima verossimilhança por contagem, suavização de Laplace e entropia cruzada. O degrau mais baixo do Mini GPT, explicado linha a linha.",
   lead: [
     "O modelo mais simples que ainda merece o nome. Ele estabelece a ",
     { b: "linha de base" },
-    ": qualquer coisa mais sofisticada precisa bater a perda do bigrama para justificar a própria complexidade.",
+    ": qualquer modelo mais sofisticado precisa bater a perda do bigrama para justificar a própria complexidade.",
   ],
 
   blocks: [
@@ -87,23 +88,23 @@ const bigrama: Level = {
       kind: "formula",
       eq: ["p(x_t | x₁ … x_{t−1})   ≈   p(x_t | x_{t−1})"],
       terms: [
-        { sym: "x_{t−1}", def: ["o caractere imediatamente anterior — o único que o modelo enxerga"] },
-        { sym: "≈", def: ["não é uma igualdade: é uma ", { b: "aposta" }, ", e uma que sabemos ser falsa"] },
+        { sym: "x_{t−1}", def: ["o caractere imediatamente anterior, o único que o modelo enxerga"] },
+        { sym: "≈", def: ["uma ", { b: "aproximação" }, " que sabemos ser falsa, e não uma igualdade"] },
       ],
       note: [
         "Com essa hipótese o condicional vira uma tabela ",
         { code: "V × V" },
-        ": uma linha por caractere de contexto, uma coluna por caractere possível. Com V = 96, são 9.216 números — cabem na memória e podem ser contados numa passada.",
+        ": uma linha por caractere de contexto, uma coluna por caractere possível. Com V = 96, são 9.216 números, que cabem na memória e podem ser contados numa passada.",
       ],
     },
     {
       kind: "note",
       tone: "key",
-      title: "A ideia que vale a página inteira",
+      title: "A ideia central desta página",
       runs: [
         "Um modelo de linguagem é uma ",
         { b: "tabela de probabilidades condicionais" },
-        ". Tudo o que os níveis 2 e 3 fazem é comprimir essa tabela — que seria grande demais para o contexto real — dentro de uma função com parâmetros. Mas o objeto que se quer estimar continua sendo este.",
+        ". Tudo o que os níveis 2 e 3 fazem é comprimir essa tabela, que seria grande demais para o contexto real, dentro de uma função com parâmetros. Mas o objeto que se quer estimar continua sendo este.",
       ],
     },
 
@@ -117,9 +118,9 @@ const bigrama: Level = {
         { code: "a" },
         " apareceu 1.000 vezes e em 300 delas foi seguido de ",
         { code: "b" },
-        ", a estimativa é 0,3. Isso tem nome — ",
+        ", a estimativa é 0,3. Isso tem nome: ",
         { b: "estimativa de máxima verossimilhança" },
-        " — e é, demonstravelmente, a tabela que torna o corpus observado o mais provável possível.",
+        ". É, demonstravelmente, a tabela que torna o corpus observado o mais provável possível.",
       ],
     },
     {
@@ -127,7 +128,7 @@ const bigrama: Level = {
       eq: ["N[a][b]  =  quantas vezes 'b' apareceu logo depois de 'a'", "p(b | a)  =  ( N[a][b] + α )  /  ( Σ_c N[a][c] + α·V )"],
       terms: [
         { sym: "N[a][b]", def: ["a contagem crua do par, preenchida numa varredura só"] },
-        { sym: "Σ_c N[a][c]", def: ["quantas vezes ", { code: "a" }, " apareceu no total — o denominador sem suavização"] },
+        { sym: "Σ_c N[a][c]", def: ["quantas vezes ", { code: "a" }, " apareceu no total: o denominador sem suavização"] },
         { sym: "α", def: ["a constante de suavização (o projeto usa ", { code: "α = 1" }, ")"] },
         { sym: "V", def: ["o tamanho do vocabulário; ", { code: "α·V" }, " é a massa total que a suavização acrescenta à linha"] },
       ],
@@ -135,7 +136,7 @@ const bigrama: Level = {
     {
       kind: "p",
       runs: [
-        "O treino inteiro do nível 1 são estas cinco linhas. Não é uma simplificação didática: é literalmente o corpo de ",
+        "O treino inteiro do nível 1 são estas cinco linhas, copiadas sem corte do corpo de ",
         { code: "BigramModel.fit()" },
         ".",
       ],
@@ -185,7 +186,7 @@ const bigrama: Level = {
         { b: "impossível" },
         ", não apenas raro. Nenhum corpus finito autoriza essa conclusão. A suavização de Laplace (",
         { code: "add-α" },
-        ") soma α a toda contagem, o que dá massa mínima a todo par e mantém a perda finita — ao custo de tirar um pouco de probabilidade dos pares que de fato ocorreram.",
+        ") soma α a toda contagem, o que dá massa mínima a todo par e mantém a perda finita, ao custo de tirar um pouco de probabilidade dos pares que de fato ocorreram.",
       ],
     },
     {
@@ -203,12 +204,12 @@ const bigrama: Level = {
       eq: ["L  =  −(1/N) Σ ln p(x_t | x_{t−1})", "L_uniforme  =  ln V  ≈  4,56   (para V = 96)"],
       terms: [
         { sym: "L", def: ["a entropia cruzada média, em ", { b: "nats por caractere" }] },
-        { sym: "ln V", def: ["a perda de um modelo que chuta uniformemente — o teto que qualquer modelo tem que furar"] },
+        { sym: "ln V", def: ["a perda de um modelo que chuta uniformemente: o teto que qualquer modelo tem que furar"] },
       ],
       note: [
         "Um bigrama num corpus real de português chega a algo entre 2 e 3 nats. Isso significa que, sabendo apenas o caractere anterior, a incerteza sobre o próximo caiu de 96 opções equivalentes para o equivalente a cerca de ",
         { code: "e^2,4 ≈ 11" },
-        ". É pouco, e é muito mais do que nada.",
+        ".",
       ],
     },
     {
@@ -218,7 +219,7 @@ const bigrama: Level = {
         { b: "perplexidade" },
         ", é só exponenciar: ",
         { code: "PP = e^L" },
-        ". Ela responde à pergunta \"entre quantas opções igualmente prováveis o modelo está efetivamente escolhendo?\" — e é a mesma informação, numa escala mais intuitiva.",
+        ". Ela responde à pergunta \"entre quantas opções igualmente prováveis o modelo está efetivamente escolhendo?\", com a mesma informação numa escala mais intuitiva.",
       ],
     },
 
@@ -227,7 +228,7 @@ const bigrama: Level = {
       kind: "list",
       items: [
         ["A ", { b: "textura" }, " do português aparece: a proporção certa de vogais, acentos em posições plausíveis, palavras com tamanho verossímil."],
-        ["Palavras reais quase não aparecem — e as que aparecem são curtas e frequentes: ", { code: "de" }, ", ", { code: "a" }, ", ", { code: "que" }, "."],
+        ["Palavras reais quase não aparecem, e as que aparecem são curtas e frequentes: ", { code: "de" }, ", ", { code: "a" }, ", ", { code: "que" }, "."],
         ["Não há concordância, não há sintaxe, não há memória: depois de escrever ", { code: "menin" }, ", o modelo já esqueceu que estava escrevendo uma palavra."],
       ],
     },
@@ -236,7 +237,7 @@ const bigrama: Level = {
       tone: "tip",
       title: "É esse esquecimento que motiva o nível 2",
       runs: [
-        "O bigrama não falha por falta de dados nem por má estimativa — a estimativa dele é ",
+        "O bigrama não falha por falta de dados nem por má estimativa: a estimativa dele é ",
         { b: "ótima" },
         " dado o que ele olha. Ele falha porque olha um caractere só. A pergunta natural passa a ser: e se olhasse oito?",
       ],
@@ -269,7 +270,7 @@ const bigrama: Level = {
         { code: "1e-9" },
         " e depois por ",
         { code: "50" },
-        ". Explique, sem rodar, o que cada extremo faz com a perda — e depois confira.",
+        ". Explique, sem rodar, o que cada extremo faz com a perda, e depois confira.",
       ],
     },
     {
@@ -310,7 +311,7 @@ const mlp: Level = {
   name: "MLP",
   file: "model/MlpModel.java",
   flag: "--model mlp",
-  tagline: "Oito caracteres, e cada gradiente derivado à mão.",
+  tagline: "Oito caracteres, e cada gradiente escrito explicitamente.",
   card: [
     "Uma rede rasa que olha uma janela fixa de ",
     { b: "oito caracteres" },
@@ -331,14 +332,14 @@ const mlp: Level = {
     { label: "Perda esperada", value: "abaixo do bigrama" },
   ],
 
-  title: "Nível 2: MLP com backpropagation manual — mini-gpt-java",
+  title: `Nível 2: MLP com backpropagation manual — ${productName}`,
   description:
-    "Uma rede rasa estilo Bengio 2003 que prevê o próximo caractere a partir de uma janela de oito. Todos os gradientes são derivados à mão, comentados passo a passo e conferidos por diferenças finitas.",
+    "Uma rede rasa estilo Bengio 2003 que prevê o próximo caractere a partir de uma janela de oito. Todos os gradientes são derivados explicitamente, sem autodiff, comentados passo a passo e conferidos por diferenças finitas.",
   ogTitle: "Nível 2 — MLP com backprop manual",
   ogDescription:
-    "Embedding, concatenação, tanh e softmax — com a cadeia de gradientes inteira escrita à mão e validada com erro abaixo de 1e-5.",
+    "Embedding, concatenação, tanh e softmax, com a cadeia de gradientes inteira escrita explicitamente e validada com erro abaixo de 1e-5.",
   lead: [
-    "Aqui aparece o gradiente. E aparece ",
+    "Aqui aparece o gradiente, e aparece ",
     { b: "sem autodiff" },
     ": cada derivada é escrita explicitamente, para que você veja de onde ela vem antes de deixar uma biblioteca calculá-la por você.",
   ],
@@ -348,21 +349,21 @@ const mlp: Level = {
     {
       kind: "p",
       runs: [
-        "O bigrama esquece tudo, exceto um caractere. A correção óbvia seria contar trigramas, tetragramas, e assim por diante — mas a tabela cresce como ",
+        "O bigrama esquece tudo, exceto um caractere. A correção óbvia seria contar trigramas, tetragramas, e assim por diante, mas a tabela cresce como ",
         { code: "V^k" },
         ". Com V = 96 e uma janela de oito, seriam ",
         { code: "96⁸" },
-        " linhas, cerca de sete mil trilhões. E, pior do que o tamanho: a esmagadora maioria delas ficaria em zero, porque nenhum corpus contém todas as combinações — de modo que a tabela gigante não teria nada a dizer justamente sobre as janelas que você mais precisa prever.",
+        " linhas, cerca de sete mil trilhões. E, pior do que o tamanho: a maioria delas ficaria em zero, porque nenhum corpus contém todas as combinações. A tabela gigante não teria nada a dizer justamente sobre as janelas que você mais precisa prever.",
       ],
     },
     {
       kind: "note",
       tone: "key",
-      title: "A saída não é uma tabela maior, é uma função",
+      title: "A saída é uma função, e não uma tabela maior",
       runs: [
         "Em vez de tabelar todas as janelas, aprendemos uma ",
         { b: "função" },
-        " com poucos milhares de parâmetros que mapeia qualquer janela para uma distribuição. Janelas parecidas produzem saídas parecidas — o que a tabela nunca conseguiria, porque para ela ",
+        " com poucos milhares de parâmetros que mapeia qualquer janela para uma distribuição. Janelas parecidas produzem saídas parecidas, o que a tabela nunca conseguiria, porque para ela ",
         { code: "\"o menin\"" },
         " e ",
         { code: "\"a menin\"" },
@@ -371,7 +372,7 @@ const mlp: Level = {
     },
 
     { kind: "h", text: "A arquitetura" },
-    { kind: "figure", name: "mlp", caption: ["O caminho de ida, do id ao logit. Cada seta é uma linha de ", { code: "MlpModel.java" }, "."] },
+    { kind: "figure", name: "mlp", caption: ["O caminho de ida, do id ao logit. Cada seta corresponde a uma linha de ", { code: "MlpModel.java" }, "."] },
     {
       kind: "formula",
       eq: [
@@ -381,16 +382,16 @@ const mlp: Level = {
         "L     =  entropia cruzada( softmax(logits), alvo )",
       ],
       terms: [
-        { sym: "C", def: ["a tabela de embeddings, ", { code: "V × E" }, ". A linha ", { code: "C[id]" }, " é o vetor que representa aquele caractere — e é ", { b: "aprendida" }, ", não escolhida"] },
+        { sym: "C", def: ["a tabela de embeddings, ", { code: "V × E" }, ". A linha ", { code: "C[id]" }, " é o vetor que representa aquele caractere, e o treino a ", { b: "aprende" }, " em vez de recebê-la pronta"] },
         { sym: "T", def: ["o comprimento da janela: 8 por padrão (", { code: "--context" }, ")"] },
         { sym: "E", def: ["a dimensão do embedding: 24 por padrão (", { code: "--embed" }, ")"] },
         { sym: "H", def: ["o tamanho da camada oculta: 128 por padrão (", { code: "--hidden" }, ")"] },
-        { sym: "tanh", def: ["a não linearidade. Sem ela, duas camadas lineares colapsam numa só — e a rede inteira vira uma regressão linear"] },
+        { sym: "tanh", def: ["a não linearidade. Sem ela, duas camadas lineares colapsam numa só, e a rede inteira vira uma regressão linear"] },
       ],
       note: [
         "É a arquitetura de Bengio (2003), a mesma que popularizou a ideia de embeddings aprendidos. Repare que a concatenação é o ponto fraco: cada posição da janela recebe o seu próprio bloco de pesos em ",
         { code: "W₁" },
-        ", então o que a rede aprende sobre a posição 3 não vale nada para a posição 4. Guarde isso — é exatamente o que a atenção vai consertar no nível 3.",
+        ", então o que a rede aprende sobre a posição 3 não vale nada para a posição 4. Guarde isso: é exatamente o que a atenção vai consertar no nível 3.",
       ],
     },
 
@@ -400,14 +401,14 @@ const mlp: Level = {
       runs: [
         "Derivar a entropia cruzada e o softmax separadamente é trabalhoso e numericamente instável. Derivar os dois ",
         { b: "juntos" },
-        " produz uma das expressões mais bonitas da área — e a única fórmula deste nível que vale a pena decorar:",
+        " faz tudo cancelar e sobra uma linha, a única fórmula deste nível que vale a pena decorar:",
       ],
     },
     {
       kind: "formula",
       eq: ["∂L / ∂logits   =   ( P  −  onehot(y) )  /  B"],
       terms: [
-        { sym: "P", def: ["as probabilidades previstas, ", { code: "softmax(logits)" }, " — uma linha por exemplo do lote"] },
+        { sym: "P", def: ["as probabilidades previstas, ", { code: "softmax(logits)" }, ", com uma linha por exemplo do lote"] },
         { sym: "onehot(y)", def: ["um vetor com 1 na posição do caractere correto e 0 em todas as outras"] },
         { sym: "B", def: ["o tamanho do mini-lote; dividir por ele é o que faz a perda ser uma ", { b: "média" }, " e não uma soma"] },
       ],
@@ -432,7 +433,7 @@ const mlp: Level = {
         { code: "dLogits" },
         ", cada passo seguinte é uma aplicação mecânica da regra da cadeia, andando de trás para frente pelo caminho de ida. Este bloco é o comentário de classe de ",
         { code: "MlpModel" },
-        ", copiado — e cada linha dele existe, comentada, no corpo de ",
+        ", copiado, e cada linha dele existe, comentada, no corpo de ",
         { code: "forwardBackward()" },
         ".",
       ],
@@ -463,7 +464,7 @@ const mlp: Level = {
         { code: "(T·E × H)" },
         ", então ",
         { code: "dW1" },
-        " também é. Isso sozinho já determina de que lado cada transposta entra na multiplicação — e elimina a maior parte dos erros de derivação antes mesmo de você derivar.",
+        " também é. Isso sozinho já determina de que lado cada transposta entra na multiplicação, e elimina a maior parte dos erros de derivação antes mesmo de você derivar.",
       ],
     },
 
@@ -472,13 +473,13 @@ const mlp: Level = {
       kind: "formula",
       eq: ["a = tanh(z)        ⇒        da/dz = 1 − a²"],
       terms: [
-        { sym: "a", def: ["a ativação que o forward já calculou — a derivada não precisa de ", { code: "z" }, ", só do resultado"] },
+        { sym: "a", def: ["a ativação que o forward já calculou: a derivada não precisa de ", { code: "z" }, ", só do resultado"] },
         { sym: "1 − a²", def: ["vale 1 quando ", { code: "a = 0" }, " e cai a zero quando ", { code: "a → ±1" }] },
       ],
       note: [
         "Aí está a ",
         { b: "saturação" },
-        ": um neurônio empurrado para ±1 tem derivada quase nula, e o gradiente que passa por ele desaparece — ele para de aprender sem dar nenhum sinal. É por isso que ",
+        ": um neurônio empurrado para ±1 tem derivada quase nula, e o gradiente que passa por ele desaparece. Ele para de aprender sem dar nenhum sinal. É por isso que ",
         { code: "W₁" },
         " é inicializado com desvio ",
         { code: "1/√fan_in" },
@@ -492,7 +493,7 @@ const mlp: Level = {
       runs: [
         "O último passo do backward é o mais fácil de errar. Cada exemplo usou T linhas da tabela ",
         { code: "C" },
-        ", e o mesmo caractere pode aparecer várias vezes na mesma janela — pense em ",
+        ", e o mesmo caractere pode aparecer várias vezes na mesma janela. Pense em ",
         { code: "\"casa da \"" },
         ", com três ",
         { code: "a" },
@@ -521,7 +522,7 @@ const mlp: Level = {
       tone: "warn",
       title: "Um '=' no lugar de um '+=' treina em silêncio",
       runs: [
-        "Trocar o acúmulo por atribuição faz o modelo aprender com apenas um dos usos de cada caractere. A perda ainda cai, o programa não reclama, e o resultado é só um pouco pior — o tipo de defeito que se descobre semanas depois. É a razão de o ",
+        "Trocar o acúmulo por atribuição faz o modelo aprender com apenas um dos usos de cada caractere. A perda ainda cai, o programa não reclama, e o resultado é só um pouco pior: o tipo de defeito que se descobre semanas depois. É a razão de o ",
         { code: "MlpGradCheckTest" },
         " existir.",
       ],
@@ -542,7 +543,7 @@ const mlp: Level = {
     {
       kind: "list",
       items: [
-        ["A perda cai claramente abaixo da do bigrama — o primeiro sinal concreto de que a complexidade se pagou."],
+        ["A perda cai claramente abaixo da do bigrama, o primeiro sinal concreto de que a complexidade se pagou."],
         ["Sílabas legítimas aparecem, e depois palavras curtas inteiras: o modelo aprendeu que ", { code: "q" }, " é seguido de ", { code: "u" }, ", que ", { code: "nh" }, " existe e ", { code: "hn" }, " não."],
         ["A frase ainda não fecha: com oito caracteres de janela, não há como manter concordância nem lembrar o sujeito."],
         ["O treino leva segundos, o que faz deste o nível certo para experimentar hiperparâmetro."],
@@ -561,7 +562,7 @@ const mlp: Level = {
         { code: "8" },
         " e ",
         { code: "16" },
-        ", mantendo o resto igual. A perda melhora sempre? A partir de que ponto o ganho não paga o custo — e por que a concatenação torna esse custo linear em T?",
+        ", mantendo o resto igual. A perda melhora sempre? A partir de que ponto o ganho não paga o custo, e por que a concatenação torna esse custo linear em T?",
       ],
     },
     {
@@ -581,7 +582,7 @@ const mlp: Level = {
       body: [
         "Substitua ",
         { code: "Math.tanh(...)" },
-        " pela identidade e ajuste o backward (a derivada vira 1). A rede continua treinando — mas prove que ela deixou de ser mais expressiva que uma única camada linear.",
+        " pela identidade e ajuste o backward (a derivada vira 1). A rede continua treinando, mas prove que ela deixou de ser mais expressiva que uma única camada linear.",
       ],
     },
     {
@@ -615,7 +616,7 @@ const transformer: Level = {
   card: [
     "Um GPT em miniatura: embeddings de token e de posição, ",
     { b: "self-attention causal multi-head" },
-    ", LayerNorm, conexões residuais, feed-forward e pesos amarrados. Aqui ninguém escreve gradiente — o grafo do ",
+    ", LayerNorm, conexões residuais, feed-forward e pesos amarrados. Aqui ninguém escreve gradiente: o grafo do ",
     { code: "Tensor" },
     " faz isso.",
   ],
@@ -632,16 +633,16 @@ const transformer: Level = {
     { label: "Perda alvo", value: "< 1,7" },
   ],
 
-  title: "Nível 3: Transformer mínimo — mini-gpt-java",
+  title: `Nível 3: Transformer mínimo — ${productName}`,
   description:
-    "Um GPT em miniatura treinado com autodiff reverso escrito à mão: atenção causal multi-head, LayerNorm, residuais, feed-forward e pesos amarrados, em Java puro e sem GPU.",
+    "Um GPT em miniatura treinado com um autodiff reverso implementado dentro do projeto: atenção causal multi-head, LayerNorm, residuais, feed-forward e pesos amarrados, em Java puro e sem GPU.",
   ogTitle: "Nível 3 — Transformer mínimo",
   ogDescription:
     "Atenção causal multi-head, LayerNorm, residuais e um grafo de autodiff escrito do zero. Perda de validação abaixo de 1,7 em CPU comum.",
   lead: [
-    "O degrau final. Duas mudanças o separam do nível 2: o contexto deixa de ser uma janela rígida e passa a ser ",
+    "O degrau final. Duas mudanças o separam do nível 2. O contexto deixa de ser uma janela rígida e passa a ser ",
     { b: "ponderado pelo próprio modelo" },
-    "; e os gradientes deixam de ser escritos à mão e passam a ser derivados por um grafo.",
+    "; e os gradientes deixam de ser escritos um a um e passam a ser derivados por um grafo.",
   ],
 
   blocks: [
@@ -649,7 +650,7 @@ const transformer: Level = {
     {
       kind: "p",
       runs: [
-        "O MLP concatena a janela. Isso tem duas consequências ruins. Primeira: cada posição ganha um bloco próprio de pesos, então o que a rede aprende na posição 3 não transfere para a posição 4. Segunda: a janela é rígida — oito caracteres, sempre, sejam eles relevantes ou não.",
+        "O MLP concatena a janela. Isso tem duas consequências ruins. Primeira: cada posição ganha um bloco próprio de pesos, então o que a rede aprende na posição 3 não transfere para a posição 4. Segunda: a janela é rígida, com oito caracteres sempre, sejam eles relevantes ou não.",
       ],
     },
     {
@@ -664,13 +665,13 @@ const transformer: Level = {
     },
 
     { kind: "h", text: "Consultas, chaves e valores" },
-    { kind: "figure", name: "atencao", caption: ["Uma cabeça de atenção. As três projeções saem do mesmo ", { code: "x" }, " — daí o nome ", { i: "self" }, "-attention."] },
+    { kind: "figure", name: "atencao", caption: ["Uma cabeça de atenção. As três projeções saem do mesmo ", { code: "x" }, ", daí o nome ", { i: "self" }, "-attention."] },
     {
       kind: "formula",
       eq: ["Q = x·W_Q     K = x·W_K     V = x·W_V", "atenção(Q, K, V)  =  softmax( Q·Kᵀ / √d  +  máscara ) · V"],
       terms: [
-        { sym: "Q (query)", def: ["o que a posição atual ", { b: "procura" }, " — uma pergunta, em forma de vetor"] },
-        { sym: "K (key)", def: ["o que cada posição anterior ", { b: "oferece" }, " — um rótulo com que a pergunta é comparada"] },
+        { sym: "Q (query)", def: ["o que a posição atual ", { b: "procura" }, ": uma pergunta, em forma de vetor"] },
+        { sym: "K (key)", def: ["o que cada posição anterior ", { b: "oferece" }, ": um rótulo com que a pergunta é comparada"] },
         { sym: "V (value)", def: ["o que cada posição ", { b: "entrega" }, ", se for escolhida"] },
         { sym: "Q·Kᵀ", def: ["o produto escalar de cada pergunta com cada rótulo: alto quando combinam"] },
         { sym: "√d", def: ["o fator de escala, com ", { code: "d = E / número de cabeças" }] },
@@ -678,7 +679,7 @@ const transformer: Level = {
       note: [
         "O softmax por linha transforma essas afinidades em pesos que somam 1. A saída de uma posição é a ",
         { b: "média ponderada" },
-        " dos valores das posições que ela decidiu olhar. Nada aqui é fixo: mude o texto e os pesos mudam.",
+        " dos valores das posições que ela decidiu olhar. Mude o texto e os pesos mudam.",
       ],
     },
     {
@@ -688,7 +689,7 @@ const transformer: Level = {
         { code: "E = 128" },
         " e 4 cabeças, cada cabeça trabalha em ",
         { code: "d = 32" },
-        " dimensões e pode se especializar — uma acompanha a palavra em curso, outra o começo da frase — e as saídas são concatenadas de volta a 128.",
+        " dimensões e pode se especializar (uma acompanha a palavra em curso, outra o começo da frase). As saídas são concatenadas de volta a 128.",
       ],
     },
 
@@ -700,9 +701,7 @@ const transformer: Level = {
         { code: "d" },
         " tem desvio padrão proporcional a ",
         { code: "√d" },
-        ". Sem correção, com d = 32 os escores chegam ao softmax grandes demais; ele satura, um peso vai a quase 1 e os outros a quase 0 — e a derivada do softmax saturado é quase nula. O modelo ",
-        { b: "para de aprender antes de começar" },
-        ".",
+        ". Sem correção, com d = 32 os escores chegam ao softmax grandes demais; ele satura, um peso vai a quase 1 e os outros a quase 0, e a derivada do softmax saturado é quase nula. O modelo para de aprender antes de começar.",
       ],
     },
     {
@@ -731,12 +730,12 @@ const transformer: Level = {
       terms: [
         { sym: "i", def: ["a posição que está prevendo"] },
         { sym: "j", def: ["a posição sendo olhada"] },
-        { sym: "−∞", def: ["porque ", { code: "e^{−∞} = 0" }, ": depois do softmax, o peso é exatamente zero, não apenas pequeno"] },
+        { sym: "−∞", def: ["porque ", { code: "e^{−∞} = 0" }, ": depois do softmax, o peso é exatamente zero"] },
       ],
       note: [
         "O ",
         { code: "Tensor.causalMask" },
-        " aplica isso antes do softmax, e não depois. Zerar depois exigiria renormalizar à mão e ainda deixaria o gradiente fluir pelo caminho proibido — o mascaramento tem que acontecer onde o softmax possa vê-lo.",
+        " aplica isso antes do softmax, e não depois. Zerar depois exigiria renormalizar em seguida e ainda deixaria o gradiente fluir pelo caminho proibido: o mascaramento tem que acontecer onde o softmax possa vê-lo.",
       ],
     },
 
@@ -746,7 +745,7 @@ const transformer: Level = {
       runs: [
         "Embaralhe as posições de entrada e a atenção devolve as mesmas saídas, embaralhadas junto. Ela é uma operação sobre um ",
         { b: "conjunto" },
-        ", não sobre uma sequência — e uma sequência de caracteres embaralhada não é português. A correção é somar, a cada posição, um vetor que depende só do índice:",
+        ", não sobre uma sequência, e uma sequência de caracteres embaralhada não é português. A correção é somar, a cada posição, um vetor que depende só do índice:",
       ],
     },
     {
@@ -757,7 +756,7 @@ const transformer: Level = {
     {
       kind: "p",
       runs: [
-        "Os dois embeddings são aprendidos. A soma parece ingênua — e funciona porque o espaço tem 128 dimensões, sobrando direções para carregar as duas informações sem que uma apague a outra.",
+        "Os dois embeddings são aprendidos. A soma parece ingênua, e funciona porque o espaço tem 128 dimensões, com direções de sobra para carregar as duas informações sem que uma apague a outra.",
       ],
     },
 
@@ -768,7 +767,7 @@ const transformer: Level = {
       eq: ["x  ←  x  +  atenção( LayerNorm(x) )", "x  ←  x  +  feedForward( LayerNorm(x) )"],
       terms: [
         { sym: "LayerNorm", def: ["normaliza cada ", { b: "posição" }, " para média 0 e variância 1, depois reescala por ", { code: "γ" }, " e ", { code: "β" }, " aprendidos"] },
-        { sym: "x + …", def: ["a conexão residual: a sub-camada aprende uma ", { b: "correção" }, ", não uma substituição"] },
+        { sym: "x + …", def: ["a conexão residual: a sub-camada aprende uma ", { b: "correção" }, " do que já estava lá"] },
       ],
       note: [
         "O residual é o que torna a profundidade viável. Como a derivada de ",
@@ -789,7 +788,7 @@ const transformer: Level = {
         { code: "E × V" },
         ". Em vez disso, o projeto reaproveita a tabela de embeddings transposta: ",
         { code: "logits = x · tokEmbᵀ" },
-        ". Faz sentido pelos dois lados — a mesma matriz que diz \"este caractere é este vetor\" serve para perguntar \"qual caractere se parece com este vetor?\" — e economiza ",
+        ". A mesma matriz que diz \"este caractere é este vetor\" responde \"qual caractere se parece com este vetor?\", e a economia é de ",
         { code: "V × E" },
         " parâmetros, o que também regulariza.",
       ],
@@ -819,11 +818,11 @@ const transformer: Level = {
       runs: [
         "Quem já derivou ",
         { code: "dW2 = Aᵀ·dLogits" },
-        " à mão reconhece a mesma expressão dentro do ",
+        " passo a passo reconhece a mesma expressão dentro do ",
         { code: "backward" },
         " do ",
         { code: "matmul" },
-        ". O autodiff não é uma caixa-preta nova: é o nível 2 escrito uma vez por operação, em vez de uma vez por modelo.",
+        ". O autodiff é o nível 2 escrito uma vez por operação, em vez de uma vez por modelo.",
       ],
     },
 
@@ -839,7 +838,7 @@ const transformer: Level = {
         { code: "(B·T, E)" },
         ", essas camadas viram ",
         { b: "uma" },
-        " multiplicação grande em vez de B pequenas — o que importa muito em CPU. Só a atenção mistura posições, e por isso só ela é feita sequência por sequência.",
+        " multiplicação grande em vez de B pequenas, o que importa muito em CPU. Só a atenção mistura posições, e por isso só ela é feita sequência por sequência.",
       ],
     },
 
@@ -848,8 +847,8 @@ const transformer: Level = {
       kind: "list",
       items: [
         ["A menor perda dos três níveis. A meta declarada do projeto é ", { b: "validação abaixo de 1,7" }, " num corpus real de ~1 MB."],
-        ["Palavras reais na maior parte do tempo, e frases que começam a fechar: concordância de gênero e número aparece sozinha."],
-        ["Com os padrões (2000 passos, lote 16), cerca de ", { b: "25 minutos" }, " numa CPU comum, sem GPU. Mais ", { code: "--steps" }, " leva mais fundo, ao custo de tempo."],
+        ["Palavras reais na maior parte do tempo, e frases que começam a fechar: a concordância de gênero e número aparece sozinha."],
+        ["Com os padrões (2000 passos, lote 16), cerca de 25 minutos numa CPU comum, sem GPU. Mais ", { code: "--steps" }, " leva mais fundo, ao custo de tempo."],
         ["A distância entre a perda de treino e a de validação é o que você deve vigiar: se a primeira cai e a segunda para, o modelo passou a decorar."],
       ],
     },
@@ -866,7 +865,7 @@ const transformer: Level = {
         { code: "--heads 4" },
         ", mantendo ",
         { code: "--embed 128" },
-        ". O número de parâmetros é praticamente o mesmo — então qualquer diferença de perda vem da ",
+        ". O número de parâmetros é praticamente o mesmo, então qualquer diferença de perda vem da ",
         { b: "estrutura" },
         ", não do tamanho.",
       ],
@@ -890,7 +889,7 @@ const transformer: Level = {
         { code: "Tensor.causalMask" },
         " e treine por 200 passos. A perda de ",
         { b: "treino" },
-        " despenca; a de validação, não. Explique o que o modelo aprendeu a fazer — e por que é inútil.",
+        " despenca; a de validação, não. Explique o que o modelo aprendeu a fazer, e por que é inútil.",
       ],
     },
     {

@@ -7,6 +7,7 @@ import { Pipeline } from "../components/sections/Pipeline";
 import { Demos } from "../components/sections/Demos";
 import { Trust } from "../components/sections/Trust";
 import { Roadmap } from "../components/sections/Roadmap";
+import { Lineage } from "../components/sections/Lineage";
 import { Rules } from "../components/sections/Rules";
 import { Closing } from "../components/sections/Closing";
 
@@ -35,6 +36,7 @@ export function Landing() {
       <Demos />
       <Trust />
       <Roadmap />
+      <Lineage />
       <Rules />
       <Closing />
       <Footer />
