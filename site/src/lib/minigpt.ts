@@ -256,14 +256,21 @@ export function generateBigram(
 /**
  * O corpus das demonstrações desta página.
  *
- * É curto de propósito — cerca de dois mil caracteres, para tudo acontecer no clique — e
- * escrito com acentuação completa, porque é assim que o português é e porque o
- * tokenizador em nível de caractere trata `ã` como qualquer outro caractere: um id a
- * mais no vocabulário.
+ * Escrito com acentuação completa, porque é assim que o português é e porque o
+ * tokenizador em nível de caractere trata `ã` como qualquer outro caractere: um id a mais
+ * no vocabulário.
  *
- * O repositório traz um corpus placeholder do mesmo tamanho. Para treinar de verdade,
- * `data/README.md` explica como colocar cerca de 1 MB de texto em domínio público —
- * Machado de Assis, Eça de Queirós, José de Alencar — no lugar dele.
+ * O tamanho é uma escolha, e ela tem consequência visível. Um corpus de dois mil
+ * caracteres deixava a maior parte dos pares possíveis sem nenhuma ocorrência — e aí a
+ * massa que a suavização acrescenta a cada linha (`α·V`) pesa mais do que as contagens
+ * reais, o que empurra o modelo na direção do sorteio uniforme e faz o texto sair pior do
+ * que um bigrama honestamente é. Este corpus é várias vezes maior por isso, e a
+ * demonstração ainda deixa o α na mão de quem lê, porque essa disputa entre contagem e
+ * suavização é justamente a lição do nível 1.
+ *
+ * Mesmo assim, ele continua sendo minúsculo perto do alvo real: `data/README.md` explica
+ * como colocar cerca de 1 MB de texto em domínio público — Machado de Assis, Eça de
+ * Queirós, José de Alencar — no lugar do placeholder do repositório.
  */
 export const DEMO_CORPUS = `A manhã chegava devagar sobre a cidade, e o rio corria manso entre as pedras.
 O menino sentava na beira da água e ficava contando os círculos que as pedras
@@ -273,17 +280,17 @@ velho relojoeiro abria a porta da loja com o mesmo cuidado de todos os dias.
 As crianças corriam pela rua estreita, riam alto e chamavam umas às outras pelos
 nomes. Nas janelas, cortinas brancas balançavam ao sabor da brisa. Uma mulher
 regava as flores da varanda e cantarolava uma canção antiga, dessas que a avó
-dela costumava cantar quando a tarde caía.
+dela costumava cantar quando a tarde caía sobre os telhados.
 
 O pai do menino contava histórias à noite: barcos, tempestades e ilhas distantes
 onde moravam pessoas que falavam línguas estranhas e bonitas. O menino ouvia tudo
 sem piscar, e depois sonhava com mares que nunca tinha visto, com portos cheios de
-gente e com o som da água batendo no casco de madeira.
+gente e com o som da água batendo no casco de madeira velha.
 
 Na escola, a professora escrevia palavras no quadro e pedia que cada um lesse a
 sua em voz alta. O menino gostava das palavras compridas, das que precisavam de
 fôlego para chegar ao fim. Achava que uma palavra grande guardava mais coisas
-dentro dela, como uma casa com muitos quartos.
+dentro dela, como uma casa com muitos quartos e muitas janelas abertas.
 
 Quando a noite chegava, a cidade ficava quieta. Só o rio continuava, teimoso,
 levando embora o que o dia tinha deixado. O menino dormia ouvindo aquela água, e
@@ -293,4 +300,47 @@ a gente perceba, ela vira parte do jeito de pensar.
 De manhã tudo recomeçava. O bonde passava com um ruído metálico, carregando gente
 apressada para o trabalho. O menino descia a ladeira devagar, chutando uma pedra
 pequena, e pensava que talvez o mundo inteiro fosse assim: uma coisa depois da
-outra, cada uma puxando a seguinte, até formar uma história.`;
+outra, cada uma puxando a seguinte, até formar uma história comprida.
+
+A padeira acordava antes de todo mundo. Acendia o forno ainda no escuro, abria os
+sacos de farinha e deixava a massa descansar sobre a mesa de madeira. Dizia que a
+massa precisava de tempo do mesmo jeito que a gente precisa, e que ter pressa com
+o pão era o mesmo que ter pressa com uma conversa: no fim não sai nada bom.
+
+O menino passava na padaria antes da escola e ficava olhando o forno aberto. O
+calor batia no rosto dele e cheirava a coisa boa. A padeira dava um pedaço de pão
+quente e mandava correr, senão chegava tarde. Ele corria, com o pão na mão, pela
+mesma rua estreita de sempre, contando os passos até o portão.
+
+Na sala de aula, a janela dava para o pátio, e o pátio dava para o rio. Quando a
+professora escrevia no quadro, o menino olhava a água e pensava nas ilhas do pai.
+Depois voltava para as palavras, porque gostava delas também. Escrevia devagar,
+caprichando nas letras, como quem tem medo de estragar uma coisa bonita.
+
+Um dia a professora pediu que cada um escrevesse uma história de verdade. O menino
+levou a tarde inteira pensando, sentado na beira da água. Escreveu sobre um barco
+que saía do porto de manhã e voltava de noite, carregado de coisas que ninguém
+sabia nomear. Escreveu sobre o cheiro do pão e sobre o ruído do bonde. Escreveu
+sobre o pai, sobre a padeira e sobre o relojoeiro que abria a loja com cuidado.
+
+Quando leu em voz alta, a sala ficou quieta. A professora não disse nada por um
+tempo, e depois disse que era isso mesmo: uma história é uma coisa puxando a
+outra, do começo ao fim, sem que a gente veja o fio. O menino guardou a frase e
+levou para casa, junto com o caderno e com o resto do pão.
+
+De noite, o pai perguntou como tinha sido o dia. O menino contou tudo, sem pressa,
+do jeito que a padeira falava da massa. O pai ouviu até o fim, olhando o teto, e
+depois disse que no dia seguinte iam os dois até o porto ver os barcos de perto.
+O menino demorou a dormir. Ficou ouvindo o rio, contando os passos que faltavam
+para a manhã chegar, e a água foi levando o pensamento dele devagarinho, até que
+o quarto ficou escuro de vez e a cidade inteira dormiu junto.
+
+No porto havia cordas grossas, caixas empilhadas e homens que gritavam nomes de
+lugares. O menino andou entre as caixas segurando a mão do pai, olhando os cascos
+pintados e a água batendo neles sem parar. Perguntou de onde vinha cada barco, e
+o pai respondeu o que sabia e inventou o resto, que é o que todo pai faz.
+
+Na volta, compraram pão na esquina e comeram andando. O menino ia calado, pensando
+que o mundo era maior do que a rua dele e menor do que ele imaginava, tudo ao
+mesmo tempo. Chegando em casa, abriu o caderno e escreveu mais um pedaço da
+história, porque agora sabia como o porto cheirava de manhã.`;

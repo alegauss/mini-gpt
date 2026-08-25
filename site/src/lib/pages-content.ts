@@ -45,7 +45,12 @@ export const mathPage = {
         },
         {
           kind: "formula",
-          eq: ["V  vocabulário      T  contexto      E  embedding", "H  camada oculta    B  lote           d  dimensão por cabeça"],
+          // As colunas destas duas linhas são construídas com espaços, e o <pre> as
+          // preserva: mexer numa palavra sem recontar os espaços desalinha a coluna.
+          eq: [
+            "V  vocabulário      T  contexto      E  embedding",
+            "H  camada oculta    B  lote          d  dimensão por cabeça",
+          ],
           terms: [
             { sym: "V", def: ["quantos caracteres distintos o corpus tem. Um corpus em português costuma dar entre 70 e 110"] },
             { sym: "T", def: ["quantos caracteres o modelo enxerga: 1 no bigrama, 8 no MLP, 64 no Transformer"] },
@@ -475,7 +480,7 @@ export const runPage = {
         items: [
           ["Um arquivo ", { code: ".txt" }, " em ", { b: "UTF-8" }, ", em português, de domínio público."],
           ["Alvo de tamanho: cerca de ", { b: "1 MB" }, " (aproximadamente um milhão de caracteres)."],
-          ["Boas fontes: ", { a: { href: "https://www.gutenberg.org", label: "Projeto Gutenberg" } }, " (filtre por Portuguese, versão \"Plain Text UTF-8\"), ", { a: { href: "http://www.dominiopublico.gov.br", label: "Domínio Público (MEC)" } }, " e ", { a: { href: "https://pt.wikisource.org", label: "Wikisource em português" } }, "."],
+          ["Boas fontes: ", { a: { href: "https://www.gutenberg.org", label: "Projeto Gutenberg" } }, " (filtre por Portuguese, versão \"Plain Text UTF-8\"), ", { a: { href: "https://www.dominiopublico.gov.br", label: "Domínio Público (MEC)" } }, " e ", { a: { href: "https://pt.wikisource.org", label: "Wikisource em português" } }, "."],
           ["Autores cujas obras costumam estar disponíveis: Machado de Assis, Eça de Queirós, José de Alencar, Aluísio Azevedo."],
         ],
       },

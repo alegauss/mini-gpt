@@ -337,11 +337,15 @@ export const demos = {
       " no nível 1.",
     ] as Rich,
     foot: [
-      "O texto tem a textura do português — a proporção de vogais, os acentos nos lugares plausíveis, o tamanho das palavras — e quase nenhuma palavra real. Essa distância entre ",
+      "O texto tem a textura do português — a proporção de vogais, os acentos em lugares plausíveis, o tamanho das palavras — e quase nenhuma palavra real. Essa distância entre ",
       { i: "parecer" },
       " e ",
       { i: "ser" },
-      " é exatamente o que o nível 2 vai atacar.",
+      " é exatamente o que o nível 2 vai atacar. Um aviso honesto sobre o α: o repositório usa ",
+      { code: "α = 1" },
+      " porque conta com um corpus de ~1 MB; aqui são poucos milhares de caracteres, e ",
+      { code: "α·V" },
+      " passaria a pesar mais do que as contagens reais. Por isso o padrão desta demonstração é menor — e por isso o controle está à mostra: arraste-o para os dois extremos e veja a suavização deixar de proteger e passar a afogar.",
     ] as Rich,
   },
 

@@ -201,6 +201,17 @@ kbd {
 .accent {
   color: var(--accent);
 }
+/* `double[][]` quebrando entre o `double[]` e o `[]` final vira duas coisas que não
+   existem. Trechos de código embutidos na prosa são curtos por construção aqui, então
+   mantê-los inteiros custa pouco e evita ler um identificador partido ao meio. */
+p code,
+li code,
+dd code,
+span code,
+b code,
+figcaption code {
+  white-space: nowrap;
+}
 
 /* brilho ambiente de fundo */
 body::before {
@@ -1160,15 +1171,23 @@ figcaption code {
 .codeblock .g {
   color: #b9a4ff;
 }
+/* A rolagem fica no <code>, não no bloco: com ela no bloco, arrastar um comando comprido
+   levaria o botão de copiar junto para fora da tela — e o botão é o motivo de a linha
+   existir. Assim o comando desliza por baixo e o botão não sai do lugar. */
 .codeblock.copy {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 14px;
+  overflow: hidden;
 }
 .codeblock.copy code {
   font-family: inherit;
   white-space: nowrap;
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow-x: auto;
+  padding-bottom: 2px;
 }
 .copy-btn {
   flex: 0 0 auto;
@@ -2157,11 +2176,13 @@ footer .wrap {
   max-width: 820px;
   margin: 14px auto 0;
 }
+/* Sem `scroll-behavior: smooth` aqui, de propósito: uma linha entra a cada 150 ms, e uma
+   rolagem animada não termina antes da próxima começar — o resultado é um terminal que
+   corre sempre atrás de si mesmo. Um terminal de verdade salta. */
 .session .term pre {
   max-height: 380px;
   min-height: 380px;
   overflow-y: auto;
-  scroll-behavior: smooth;
 }
 .session-line {
   min-height: 1.75em;

@@ -16,6 +16,14 @@ import { Rich } from "../ui/Rich";
 const SEMENTE_INICIAL = 20240824;
 const COMPRIMENTO = 320;
 
+// O α padrão daqui é menor do que o do repositório (que usa 1,0), e a diferença é o
+// tamanho do corpus, não uma discordância. A suavização acrescenta `α·V` de massa a cada
+// linha; num corpus de 1 MB isso é desprezível perto das contagens reais, mas nos poucos
+// milhares de caracteres desta página seria a maior parte da linha — e o texto sairia
+// pior do que um bigrama honestamente é. O controle fica visível justamente para que essa
+// disputa entre contagem e suavização possa ser vista acontecendo.
+const ALPHA_PADRAO = 0.3;
+
 export function BigramDemo() {
   const { vocab, model, ids } = useMemo(() => {
     const v = buildVocab(DEMO_CORPUS);
@@ -25,7 +33,7 @@ export function BigramDemo() {
     return { vocab: v, model: m, ids: encoded };
   }, []);
 
-  const [alpha, setAlpha] = useState(1);
+  const [alpha, setAlpha] = useState(ALPHA_PADRAO);
   const [temp, setTemp] = useState(1);
   const [topK, setTopK] = useState(0);
   const [prompt, setPrompt] = useState("O menino ");
@@ -83,12 +91,15 @@ export function BigramDemo() {
               id="bg-alpha"
               type="range"
               min={0.01}
-              max={5}
+              max={3}
               step={0.01}
               value={alpha}
               onChange={(e) => setAlpha(Number(e.target.value))}
             />
-            <span className="control-hint">Massa mínima dada a todo par, inclusive aos que nunca ocorreram.</span>
+            <span className="control-hint">
+              Massa mínima dada a todo par, inclusive aos que nunca ocorreram. Suba até 3 e veja o texto
+              virar ruído: a suavização passou a pesar mais que as contagens.
+            </span>
           </div>
           <div className="control">
             <label htmlFor="bg-temp">
@@ -140,7 +151,7 @@ export function BigramDemo() {
             type="button"
             className="btn btn-ghost btn-sm"
             onClick={() => {
-              setAlpha(1);
+              setAlpha(ALPHA_PADRAO);
               setTemp(1);
               setTopK(0);
               setSemente(SEMENTE_INICIAL);
