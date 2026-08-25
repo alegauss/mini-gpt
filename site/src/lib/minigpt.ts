@@ -238,10 +238,14 @@ export function generateBigram(
   },
 ): string {
   const seedIds = encode(vocab, opts.prompt);
-  let last = seedIds.length > 0 ? seedIds[seedIds.length - 1] : 0;
+  // Sem contexto não há linha da tabela para consultar, e o `BigramModel` responde a isso
+  // com a distribuição uniforme: sem caractere anterior, nada distingue um candidato do
+  // outro. Cair na linha 0 seria fingir um contexto que o usuário não deu.
+  let last = seedIds.length > 0 ? seedIds[seedIds.length - 1] : -1;
+  const uniforme = new Array<number>(vocab.itos.length).fill(1 / vocab.itos.length);
   const out: string[] = [];
   for (let step = 0; step < opts.length; step++) {
-    let p = model.row(last, opts.alpha);
+    let p = last < 0 ? uniforme : model.row(last, opts.alpha);
     p = applyTemperature(p, opts.temperature);
     if (opts.topK > 0) p = applyTopK(p, opts.topK);
     const next = sampleFrom(p, opts.rng());
@@ -249,6 +253,63 @@ export function generateBigram(
     last = next;
   }
   return out.join("");
+}
+
+/* ------------------------------------------------------- a linguagem de ordem 1 */
+
+/**
+ * Um léxico em que o bigrama é o modelo *exato*, e não uma aproximação.
+ *
+ * A hipótese do nível 1 diz que o próximo caractere depende só do anterior. Em português
+ * isso é falso, e é por isso que o texto gerado nunca fecha uma palavra. Mas a hipótese
+ * não é falsa em toda linguagem: se cada letra interna determinar sozinha a sua sucessora,
+ * o bigrama passa a descrever a linguagem sem perder nada.
+ *
+ * Estas doze palavras têm essa propriedade — foram escolhidas por busca, e o critério foi
+ * verificado por enumeração exaustiva do grafo de pares: partindo do espaço e seguindo
+ * todas as transições observadas, as únicas palavras alcançáveis são exatamente estas
+ * doze. Nenhuma cadeia produz `pãohá` ou `Azul` grudado em `mel`.
+ *
+ * Doze é perto do teto, e a razão é aritmética: cada letra interna gasta uma sucessora
+ * exclusiva, então o alfabeto disponível dividido pelo comprimento médio das palavras
+ * limita o tamanho do léxico. Palavras a mais forçariam uma letra a ter duas saídas, e
+ * bastaria isso para o grafo passar a gerar quimeras.
+ */
+export const ORDEM1_LEXICO = [
+  "Azul", "Frio", "Sul", "chá", "fé", "mel", "mão", "nó", "pão", "pé", "rio", "sal",
+] as const;
+
+/**
+ * O corpus da linguagem de ordem 1: as doze palavras sorteadas em ordem aleatória.
+ *
+ * A ordem é aleatória de propósito. O espaço é o ponto em que o bigrama perde toda a
+ * memória — depois de um espaço, a linha da tabela é a mesma qualquer que tenha sido a
+ * palavra anterior — então nenhuma ordem de palavras é aprendível neste modelo. Ao gerar
+ * o corpus por sorteio, o que se pede ao modelo é exatamente o que ele pode entregar: as
+ * palavras certas, em ordem nenhuma.
+ *
+ * A semente é fixa para que o corpus seja o mesmo a cada carga da página.
+ */
+export const ORDEM1_CORPUS = (() => {
+  const rng = mulberry32(1);
+  const palavras: string[] = [];
+  for (let i = 0; i < 1200; i++) {
+    palavras.push(ORDEM1_LEXICO[Math.floor(rng() * ORDEM1_LEXICO.length)]);
+  }
+  return ` ${palavras.join(" ")} `;
+})();
+
+/**
+ * Quantas palavras do texto não pertencem ao léxico.
+ *
+ * Só faz sentido para a linguagem de ordem 1, onde existe uma resposta certa. A última
+ * palavra é ignorada porque a geração para num comprimento fixo e costuma cortá-la no
+ * meio, o que a tornaria inválida por um motivo que não é do modelo.
+ */
+export function palavrasForaDoLexico(texto: string, lexico: readonly string[]): number {
+  const validas = new Set(lexico);
+  const palavras = texto.split(/\s+/).filter((w) => w.length > 0);
+  return palavras.slice(0, -1).filter((w) => !validas.has(w)).length;
 }
 
 /* ------------------------------------------------------------------ corpus da demonstração */

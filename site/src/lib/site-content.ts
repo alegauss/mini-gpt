@@ -380,18 +380,32 @@ export const demos = {
     lead: [
       "Este botão faz o que ",
       { code: "fit()" },
-      " faz: uma passada pelo corpus contando pares. Depois gera texto sorteando da distribuição contada. É o modelo inteiro: no nível 1 não há mais nada.",
+      " faz: uma passada pelo corpus contando pares. Depois gera texto sorteando da distribuição contada. É o modelo inteiro: no nível 1 não há mais nada. O seletor de corpus troca a linguagem que ele conta, e é aí que mora a lição.",
     ] as Rich,
     foot: [
-      "O texto tem a textura do português (a proporção de vogais, os acentos em lugares plausíveis, o tamanho das palavras) e quase nenhuma palavra real. Essa distância entre ",
+      "Em português o texto tem a textura certa (a proporção de vogais, os acentos em lugares plausíveis, o tamanho das palavras) e quase nenhuma palavra real. Aumentar o corpus não resolve: com 75 vezes mais texto a perda cai cerca de 0,26 nats e as palavras continuam inventadas, porque o bigrama esquece tudo menos um caractere. Essa distância entre ",
       { i: "parecer" },
       " e ",
       { i: "ser" },
-      " é exatamente o que o nível 2 vai atacar. Um aviso honesto sobre o α: o repositório usa ",
-      { code: "α = 1" },
-      " porque conta com um corpus de ~1 MB; aqui são poucos milhares de caracteres, e ",
-      { code: "α·V" },
-      " passaria a pesar mais do que as contagens reais. Por isso o padrão desta demonstração é menor, e por isso o controle está à mostra: arraste-o para os dois extremos e veja a suavização deixar de proteger e passar a afogar.",
+      " é o que o nível 2 vai atacar.",
+    ] as Rich,
+    // O segundo corpus responde à pergunta que a demonstração provoca. A afirmação de que o
+    // texto sai perfeito é forte, então ela é verificável na tela: o contador de palavras
+    // inválidas fica ao lado do resultado, e chega a zero enquanto a pessoa arrasta o α.
+    foot2: [
+      "Troque para a ",
+      { b: "linguagem de ordem 1" },
+      " e o mesmo modelo passa a acertar tudo. São doze palavras em que cada letra interna determina sozinha a sua sucessora, ou seja, uma linguagem em que a hipótese do bigrama é verdadeira em vez de aproximada. O contador de palavras inválidas mostra isso acontecendo. Baixe o α até 0,01 e ele chega a zero; suba para 1 e as quimeras voltam (",
+      { code: "mãsal" },
+      ", ",
+      { code: "nóAzul" },
+      "), porque a suavização dá massa às transições que a linguagem proíbe. É a mesma α que existe para impedir que um par nunca visto mande a perda para o infinito: aqui ela protege a métrica e estraga o texto, e dá para ver os dois efeitos no mesmo controle.",
+    ] as Rich,
+    // A ordem das palavras continua aleatória, e isso não é descuido — é o limite do modelo.
+    foot3: [
+      "Repare no que ela ",
+      { b: "não" },
+      " acerta: a ordem das palavras. Depois de um espaço, a linha da tabela é a mesma qualquer que tenha sido a palavra anterior, então o espaço apaga todo o contexto. Nenhum ajuste de α, τ ou top-k recupera isso, e é por isso que doze palavras é perto do teto: cada letra interna gasta uma sucessora exclusiva do alfabeto.",
     ] as Rich,
   },
 

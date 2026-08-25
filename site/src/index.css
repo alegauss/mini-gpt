@@ -1363,12 +1363,48 @@ figcaption code {
   min-width: 0;
 }
 .field label,
+.field .field-label,
 .control label {
   font-size: 0.78rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   text-transform: uppercase;
   color: var(--muted-2);
+}
+
+/* O seletor de corpus: dois botões que se comportam como um par de abas. O estado ativo
+   tem que ser legível sem depender só da cor, então o peso da fonte muda junto. */
+.seg {
+  display: inline-flex;
+  gap: 4px;
+  padding: 4px;
+  border: 1px solid var(--line);
+  border-radius: 11px;
+  background: var(--panel);
+  flex-wrap: wrap;
+}
+.seg-btn {
+  font: inherit;
+  font-size: 0.86rem;
+  padding: 7px 14px;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: background 0.15s, color 0.15s;
+}
+.seg-btn:hover {
+  color: var(--text);
+}
+.seg-btn.on {
+  background: rgba(109, 74, 255, 0.16);
+  color: var(--text);
+  font-weight: 700;
+}
+.seg-btn:focus-visible {
+  outline: 2px solid rgba(109, 74, 255, 0.55);
+  outline-offset: 1px;
 }
 .field input[type="text"],
 .field textarea {
@@ -1478,6 +1514,17 @@ input[type="range"] {
 .tok-meta b {
   color: var(--text);
   font-family: var(--mono);
+}
+/* Na linguagem de ordem 1 existe resposta certa, então o placar de palavras inválidas
+   ganha cor. Zero é o estado que a demonstração quer que a pessoa alcance sozinha. */
+.tok-meta .tok-ok {
+  color: var(--ok);
+}
+.tok-meta .tok-ok b {
+  color: inherit;
+}
+.tok-meta .tok-bad b {
+  color: var(--warn);
 }
 
 /* barras de probabilidade */

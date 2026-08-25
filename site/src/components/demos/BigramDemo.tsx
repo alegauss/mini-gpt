@@ -1,5 +1,15 @@
 import { useMemo, useState } from "react";
-import { Bigram, DEMO_CORPUS, buildVocab, encode, generateBigram, mulberry32 } from "../../lib/minigpt";
+import {
+  Bigram,
+  DEMO_CORPUS,
+  ORDEM1_CORPUS,
+  ORDEM1_LEXICO,
+  buildVocab,
+  encode,
+  generateBigram,
+  mulberry32,
+  palavrasForaDoLexico,
+} from "../../lib/minigpt";
 import { demos } from "../../lib/site-content";
 import { Rich } from "../ui/Rich";
 
@@ -24,20 +34,38 @@ const COMPRIMENTO = 320;
 // disputa entre contagem e suavização possa ser vista acontecendo.
 const ALPHA_PADRAO = 0.3;
 
+// Os dois corpora entre os quais a demonstração alterna. O segundo existe para responder à
+// pergunta que todo mundo faz depois de ver o primeiro falhar: "então dá para acertar?".
+// Dá — quando a linguagem é de ordem 1, que é a hipótese que o bigrama assume. O prompt
+// muda junto porque "O menino " não existe no léxico de doze palavras.
+const CORPORA = {
+  portugues: { rotulo: "Português", texto: DEMO_CORPUS, prompt: "O menino ", lexico: null },
+  ordem1: { rotulo: "Linguagem de ordem 1", texto: ORDEM1_CORPUS, prompt: "mar ", lexico: ORDEM1_LEXICO },
+} as const;
+type CorpusKey = keyof typeof CORPORA;
+
 export function BigramDemo() {
+  const [corpusKey, setCorpusKey] = useState<CorpusKey>("portugues");
+  const corpus = CORPORA[corpusKey];
+
   const { vocab, model, ids } = useMemo(() => {
-    const v = buildVocab(DEMO_CORPUS);
-    const encoded = encode(v, DEMO_CORPUS);
+    const v = buildVocab(corpus.texto);
+    const encoded = encode(v, corpus.texto);
     const m = new Bigram(v.itos.length);
     m.fit(encoded);
     return { vocab: v, model: m, ids: encoded };
-  }, []);
+  }, [corpus.texto]);
 
   const [alpha, setAlpha] = useState(ALPHA_PADRAO);
   const [temp, setTemp] = useState(1);
   const [topK, setTopK] = useState(0);
-  const [prompt, setPrompt] = useState("O menino ");
+  const [prompt, setPrompt] = useState<string>(CORPORA.portugues.prompt);
   const [semente, setSemente] = useState(SEMENTE_INICIAL);
+
+  function trocarCorpus(k: CorpusKey) {
+    setCorpusKey(k);
+    setPrompt(CORPORA[k].prompt);
+  }
 
   const texto = useMemo(
     () =>
@@ -57,6 +85,12 @@ export function BigramDemo() {
   const naoVistos = useMemo(() => model.unseenPairs(), [model]);
   const perdaUniforme = Math.log(v);
 
+  // Só a linguagem de ordem 1 tem resposta certa, então só nela esta conta existe.
+  const foraDoLexico = useMemo(
+    () => (corpus.lexico ? palavrasForaDoLexico(texto, corpus.lexico) : null),
+    [texto, corpus.lexico],
+  );
+
   return (
     <div className="demo reveal">
       <div className="demo-head">
@@ -67,6 +101,25 @@ export function BigramDemo() {
         <p className="demo-lead">
           <Rich runs={demos.bigram.lead} />
         </p>
+
+        <div className="demo-row">
+          <div className="field">
+            <span className="field-label">Corpus</span>
+            <div className="seg">
+              {(Object.keys(CORPORA) as CorpusKey[]).map((k) => (
+                <button
+                  key={k}
+                  type="button"
+                  className={`seg-btn${k === corpusKey ? " on" : ""}`}
+                  aria-pressed={k === corpusKey}
+                  onClick={() => trocarCorpus(k)}
+                >
+                  {CORPORA[k].rotulo}
+                </button>
+              ))}
+            </div>
+          </div>
+        </div>
 
         <div className="demo-row">
           <div className="field">
@@ -175,10 +228,22 @@ export function BigramDemo() {
           <span>
             pares nunca vistos: <b>{naoVistos}</b> de {v * v}
           </span>
+          {foraDoLexico !== null && (
+            <span className={foraDoLexico === 0 ? "tok-ok" : "tok-bad"}>
+              palavras inválidas: <b>{foraDoLexico}</b>
+              {foraDoLexico === 0 ? " — texto perfeito" : ""}
+            </span>
+          )}
         </div>
       </div>
       <div className="demo-foot">
         <Rich runs={demos.bigram.foot} />
+        <p>
+          <Rich runs={demos.bigram.foot2} />
+        </p>
+        <p>
+          <Rich runs={demos.bigram.foot3} />
+        </p>
       </div>
     </div>
   );
