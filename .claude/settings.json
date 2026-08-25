@@ -1,12 +1,8 @@
 {
   "permissions": {
     "allow": [
-      "PowerShell($paths = @\\(\"C:\\\\Program Files \\(x86\\)\\\\Microsoft\\\\Edge\\\\Application\\\\msedge.exe\",\"C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\",\"C:\\\\Program Files \\(x86\\)\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe\"\\); foreach \\($p in $paths\\) { if \\(Test-Path $p\\) { $p } })",
-      "Bash(curl -s http://localhost:4173/mini-gpt/ > /tmp/h.html; grep -c 'Tokenizador em nível de caractere' /tmp/h.html; grep -c 'id=\"demos\"' /tmp/h.html; grep -c 'A máscara causal' /tmp/h.html; grep -c 'gen-out' /tmp/h.html; wc -c /tmp/h.html)",
-      "Bash(git check-ignore *)"
-    ],
-    "additionalDirectories": [
-      "\\tmp"
+      "PowerShell(*)",
+      "Bash(*)",
     ]
   }
 }

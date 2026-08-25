@@ -1,4 +1,4 @@
-# mini-gpt-java
+# Mini GPT
 
 Um modelo de linguagem generativo em **nivel de caractere**, treinado do
 zero em **Java puro**, sem nenhuma biblioteca de machine learning. O
@@ -15,14 +15,14 @@ sofisticado.
 
 ## Restricoes do projeto
 
-- **Java 17+**, **Maven**.
-- Unica dependencia: **JUnit 5** (apenas testes).
+- **Java 21+**, **Maven 3.9+** (ou o wrapper: `./mvnw`).
+- Unica dependencia: **JUnit 6** (apenas testes).
 - **Nada** de DJL, ND4J, DL4J ou TensorFlow. Toda a algebra linear e
   escrita a mao com `double[][]`, para o codigo ser legivel por estudantes.
 
 ## Como rodar
 
-Pre-requisitos: JDK 17+ e Maven.
+Pre-requisitos: JDK 21+ e Maven 3.9+ (ou use o wrapper `./mvnw`, que dispensa instalar o Maven).
 
 ```bash
 # 1. Rodar os testes (inclui verificacao de gradiente por diferencas finitas)
@@ -104,7 +104,7 @@ mini-gpt-java/
 │   │   ├── Trainer.java        laco de treino, split treino/validacao
 │   │   └── AdamOptimizer.java  Adam com correcao de vies
 │   └── generate/Sampler.java   amostragem com temperatura e top-k
-├── src/test/java/minigpt/      testes unitarios (JUnit 5)
+├── src/test/java/minigpt/      testes unitarios (JUnit 6)
 └── site/                       o site didatico (React + Vite), veja site/README.md
 ```
 

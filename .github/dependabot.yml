@@ -1,0 +1,119 @@
+version: 2
+
+# Atualizacoes agrupadas: um PR por grupo, nao um PR por dependencia.
+# O projeto tem tres ecossistemas independentes (Maven na raiz, npm no site,
+# GitHub Actions nos workflows) e cada um abre no maximo um punhado de PRs.
+
+updates:
+  # ---------------------------------------------------------------------------
+  # Java / Maven (raiz)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: maven
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build"
+      include: scope
+    labels:
+      - dependencies
+      - java
+    groups:
+      # JUnit 5 sobe como conjunto: jupiter, engine e platform precisam
+      # andar na mesma versao.
+      junit:
+        patterns:
+          - "org.junit*"
+          - "org.junit.jupiter:*"
+          - "org.junit.platform:*"
+      # Plugins de build. Estao fixados de proposito no pom (ver properties),
+      # entao o Dependabot e quem mantem essas versoes em dia.
+      maven-plugins:
+        patterns:
+          - "org.apache.maven.plugins:*"
+        update-types:
+          - minor
+          - patch
+
+  # ---------------------------------------------------------------------------
+  # Site educacional (React + Vite)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: npm
+    directory: /site
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 5
+    commit-message:
+      prefix: "build"
+      prefix-development: "chore"
+      include: scope
+    labels:
+      - dependencies
+      - site
+    groups:
+      # react e react-dom sobem juntos com os @types correspondentes.
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "@types/react"
+          - "@types/react-dom"
+      # Cadeia de build: trocar vite sem trocar o plugin quebra o build.
+      build-tools:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "typescript"
+          - "@resvg/*"
+      # Resto das dependencias de runtime, so minor/patch no mesmo PR.
+      producao:
+        dependency-type: production
+        exclude-patterns:
+          - "react"
+          - "react-dom"
+        update-types:
+          - minor
+          - patch
+      # Resto do ferramental de desenvolvimento.
+      desenvolvimento:
+        dependency-type: development
+        exclude-patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "typescript"
+          - "@resvg/*"
+          - "@types/react"
+          - "@types/react-dom"
+        update-types:
+          - minor
+          - patch
+
+  # ---------------------------------------------------------------------------
+  # GitHub Actions (.github/workflows)
+  # ---------------------------------------------------------------------------
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: America/Sao_Paulo
+    open-pull-requests-limit: 3
+    commit-message:
+      prefix: "ci"
+      include: scope
+    labels:
+      - dependencies
+      - github-actions
+    groups:
+      # Um PR unico com todas as actions; sao quase sempre bumps de tag.
+      actions:
+        patterns:
+          - "*"

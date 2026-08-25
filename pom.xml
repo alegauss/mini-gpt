@@ -9,20 +9,32 @@
     <version>1.0.0</version>
     <packaging>jar</packaging>
 
-    <name>mini-gpt-java</name>
+    <name>Mini GPT</name>
     <description>
         Modelo de linguagem generativo em nivel de caractere, treinado do zero,
         SEM bibliotecas de machine learning. Projeto didatico em Java puro.
     </description>
 
     <properties>
-        <maven.compiler.release>17</maven.compiler.release>
+        <maven.compiler.release>21</maven.compiler.release>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-        <junit.version>5.10.2</junit.version>
+
+        <junit.version>6.1.3</junit.version>
+
+        <!--
+            Versoes de plugin fixadas de proposito. Sem isso, a versao usada e a que a
+            distribuicao do Maven da maquina traz por padrao: o mesmo commit compila de
+            um jeito na sua maquina e de outro na CI, e a diferenca nao aparece em lugar
+            nenhum do repositorio.
+        -->
+        <compiler.plugin.version>3.15.0</compiler.plugin.version>
+        <surefire.plugin.version>3.5.6</surefire.plugin.version>
+        <jar.plugin.version>3.5.1</jar.plugin.version>
+        <enforcer.plugin.version>3.6.3</enforcer.plugin.version>
     </properties>
 
     <dependencies>
-        <!-- Unica dependencia permitida: JUnit 5, apenas para testes. -->
+        <!-- Unica dependencia permitida: JUnit 6, apenas para testes. -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -34,16 +46,54 @@
     <build>
         <finalName>mini-gpt-java</finalName>
         <plugins>
+            <!--
+                Falha cedo e com uma mensagem legivel. Sem esta trava, compilar com um JDK
+                antigo produz um erro do compilador sobre uma opcao de release invalida,
+                que nao diz a quem esta comecando qual e o problema de verdade.
+            -->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-enforcer-plugin</artifactId>
+                <version>${enforcer.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>requisitos-de-build</id>
+                        <goals>
+                            <goal>enforce</goal>
+                        </goals>
+                        <configuration>
+                            <rules>
+                                <requireJavaVersion>
+                                    <version>[21,)</version>
+                                    <message>Este projeto precisa de JDK 21 ou mais novo.</message>
+                                </requireJavaVersion>
+                                <requireMavenVersion>
+                                    <version>[3.9.0,)</version>
+                                    <message>Este projeto precisa de Maven 3.9 ou mais novo. Use ./mvnw se preferir nao instalar nada.</message>
+                                </requireMavenVersion>
+                            </rules>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${compiler.plugin.version}</version>
+            </plugin>
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-surefire-plugin</artifactId>
-                <version>3.2.5</version>
+                <version>${surefire.plugin.version}</version>
             </plugin>
+
             <!-- Empacota um JAR executavel com a classe App como Main-Class. -->
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-jar-plugin</artifactId>
-                <version>3.4.1</version>
+                <version>${jar.plugin.version}</version>
                 <configuration>
                     <archive>
                         <manifest>
