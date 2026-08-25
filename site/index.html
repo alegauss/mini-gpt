@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="icon" type="image/svg+xml" href="/mini-gpt/logo.svg" />
+
+    <!--
+      O tema segue o sistema operacional, e uma escolha guardada vence sobre ele. Este
+      script roda ANTES da primeira pintura: os tokens que o fundo do body lê dependem do
+      atributo data-theme, então uma classe aplicada depois da hidratação seria um piscar
+      visível do tema errado. Fica inline e sem dependência exatamente por isso.
+    -->
+    <script>
+      (function () {
+        try {
+          var stored = localStorage.getItem("mg-theme");
+          if (stored === "dark" || stored === "light") {
+            document.documentElement.setAttribute("data-theme", stored);
+          }
+        } catch (e) {
+          /* modo privado, ou sem storage — cai na preferência do sistema */
+        }
+      })();
+    </script>
+
+    <title>mini-gpt-java — um GPT escrito à mão, em Java puro</title>
+    <meta
+      name="description"
+      content="Curso aberto e código-fonte de um modelo de linguagem em nível de caractere escrito do zero em Java, sem nenhuma biblioteca de machine learning. Três níveis: bigrama por contagem, MLP com backpropagation manual e um Transformer mínimo com autodiff."
+    />
+
+    <!--
+      scripts/prerender.mjs troca title, description, canonical e og:url por rota, com
+      substituição-ou-erro. Nenhum token de fechamento de head ou de script pode aparecer
+      dentro deste comentário, ou a injeção de assets do Vite e o prerender se ancoram
+      nele em vez do verdadeiro.
+    -->
+
+    <!-- A revelação ao rolar começa em opacidade 0 e é levantada pelo observer no cliente.
+         Sem JavaScript o texto prerenderizado continua no DOM; isto o torna visível. -->
+    <noscript>
+      <style>
+        .reveal {
+          opacity: 1 !important;
+          transform: none !important;
+        }
+      </style>
+    </noscript>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

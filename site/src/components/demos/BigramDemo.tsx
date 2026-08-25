@@ -1,0 +1,174 @@
+import { useMemo, useState } from "react";
+import { Bigram, DEMO_CORPUS, buildVocab, encode, generateBigram, mulberry32 } from "../../lib/minigpt";
+import { demos } from "../../lib/site-content";
+import { Rich } from "../ui/Rich";
+
+// Demonstração 2 — o nível 1 inteiro, treinado no navegador.
+//
+// A contagem roda uma vez (useMemo) e vale para todos os α: a suavização entra só na hora
+// de dividir, que é exatamente como o Java faz. Por isso arrastar o α é instantâneo — não
+// há nada para retreinar.
+//
+// A semente é estado: mesma semente, mesmo texto, aqui e a cada recarga da página. É a
+// mesma promessa que `--seed` faz na linha de comando, e é o que torna o passo a passo
+// reproduzível para quem estiver acompanhando.
+
+const SEMENTE_INICIAL = 20240824;
+const COMPRIMENTO = 320;
+
+export function BigramDemo() {
+  const { vocab, model, ids } = useMemo(() => {
+    const v = buildVocab(DEMO_CORPUS);
+    const encoded = encode(v, DEMO_CORPUS);
+    const m = new Bigram(v.itos.length);
+    m.fit(encoded);
+    return { vocab: v, model: m, ids: encoded };
+  }, []);
+
+  const [alpha, setAlpha] = useState(1);
+  const [temp, setTemp] = useState(1);
+  const [topK, setTopK] = useState(0);
+  const [prompt, setPrompt] = useState("O menino ");
+  const [semente, setSemente] = useState(SEMENTE_INICIAL);
+
+  const texto = useMemo(
+    () =>
+      generateBigram(model, vocab, {
+        prompt,
+        length: COMPRIMENTO,
+        alpha,
+        temperature: temp,
+        topK,
+        rng: mulberry32(semente),
+      }),
+    [model, vocab, prompt, alpha, temp, topK, semente],
+  );
+
+  const perda = useMemo(() => model.loss(ids, alpha), [model, ids, alpha]);
+  const v = vocab.itos.length;
+  const naoVistos = useMemo(() => model.unseenPairs(), [model]);
+  const perdaUniforme = Math.log(v);
+
+  return (
+    <div className="demo reveal">
+      <div className="demo-head">
+        <span className="demo-title">{demos.bigram.title}</span>
+        <span className="demo-tag">{demos.bigram.tag}</span>
+      </div>
+      <div className="demo-body">
+        <p className="demo-lead">
+          <Rich runs={demos.bigram.lead} />
+        </p>
+
+        <div className="demo-row">
+          <div className="field">
+            <label htmlFor="bg-prompt">Prompt (o texto de partida)</label>
+            <input
+              id="bg-prompt"
+              type="text"
+              value={prompt}
+              maxLength={40}
+              onChange={(e) => setPrompt(e.target.value)}
+              spellCheck={false}
+            />
+          </div>
+        </div>
+
+        <div className="controls">
+          <div className="control">
+            <label htmlFor="bg-alpha">
+              Suavização α <span className="control-val">{alpha.toFixed(2)}</span>
+            </label>
+            <input
+              id="bg-alpha"
+              type="range"
+              min={0.01}
+              max={5}
+              step={0.01}
+              value={alpha}
+              onChange={(e) => setAlpha(Number(e.target.value))}
+            />
+            <span className="control-hint">Massa mínima dada a todo par, inclusive aos que nunca ocorreram.</span>
+          </div>
+          <div className="control">
+            <label htmlFor="bg-temp">
+              Temperatura τ <span className="control-val">{temp.toFixed(2)}</span>
+            </label>
+            <input
+              id="bg-temp"
+              type="range"
+              min={0.2}
+              max={2}
+              step={0.05}
+              value={temp}
+              onChange={(e) => setTemp(Number(e.target.value))}
+            />
+            <span className="control-hint">Abaixo de 1 esfria e repete; acima de 1 esquenta e delira.</span>
+          </div>
+          <div className="control">
+            <label htmlFor="bg-topk">
+              Top-k <span className="control-val">{topK === 0 ? "desligado" : topK}</span>
+            </label>
+            <input
+              id="bg-topk"
+              type="range"
+              min={0}
+              max={20}
+              step={1}
+              value={topK}
+              onChange={(e) => setTopK(Number(e.target.value))}
+            />
+            <span className="control-hint">Mantém só os k mais prováveis e renormaliza. 0 desliga.</span>
+          </div>
+        </div>
+
+        <div className="gen-out">
+          <span className="prompt">{prompt}</span>
+          {texto}
+          <span className="caret" aria-hidden="true" />
+        </div>
+
+        <div className="demo-actions" style={{ marginTop: "16px" }}>
+          <button
+            type="button"
+            className="btn btn-primary btn-sm"
+            onClick={() => setSemente((s) => s + 1)}
+          >
+            Gerar outra vez
+          </button>
+          <button
+            type="button"
+            className="btn btn-ghost btn-sm"
+            onClick={() => {
+              setAlpha(1);
+              setTemp(1);
+              setTopK(0);
+              setSemente(SEMENTE_INICIAL);
+            }}
+          >
+            Voltar aos padrões
+          </button>
+          <span className="control-hint">semente {semente}</span>
+        </div>
+
+        <div className="tok-meta">
+          <span>
+            vocabulário: <b>V = {v}</b>
+          </span>
+          <span>
+            perda no corpus: <b>{perda.toFixed(3)}</b> nats
+          </span>
+          <span>
+            chute uniforme (ln V): <b>{perdaUniforme.toFixed(3)}</b>
+          </span>
+          <span>
+            pares nunca vistos: <b>{naoVistos}</b> de {v * v}
+          </span>
+        </div>
+      </div>
+      <div className="demo-foot">
+        <Rich runs={demos.bigram.foot} />
+      </div>
+    </div>
+  );
+}

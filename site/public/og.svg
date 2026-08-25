@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <!--
+    O cartão social, rasterizado para dist/og.png a cada build (scripts/og-image.mjs).
+    A fonte é nomeada explicitamente porque o rasterizador carrega fontes do sistema:
+    um family que a máquina do build não tem sai como retângulo vazio.
+  -->
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0d0b1b" />
+      <stop offset="1" stop-color="#141033" />
+    </linearGradient>
+    <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b6bff" />
+      <stop offset="0.55" stop-color="#6d4aff" />
+      <stop offset="1" stop-color="#22c8d8" />
+    </linearGradient>
+    <radialGradient id="glow" cx="0.82" cy="0.1" r="0.7">
+      <stop offset="0" stop-color="#6d4aff" stop-opacity="0.38" />
+      <stop offset="1" stop-color="#6d4aff" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+
+  <rect width="1200" height="630" fill="url(#bg)" />
+  <rect width="1200" height="630" fill="url(#glow)" />
+
+  <!-- a marca: a máscara causal -->
+  <g transform="translate(88, 168) scale(1.85)" fill="url(#mg)">
+    <rect x="3.5" y="3.5" width="12" height="12" rx="3.2" opacity="1" />
+    <rect x="3.5" y="18.5" width="12" height="12" rx="3.2" opacity="0.45" />
+    <rect x="18.5" y="18.5" width="12" height="12" rx="3.2" opacity="1" />
+    <rect x="3.5" y="33.5" width="12" height="12" rx="3.2" opacity="0.28" />
+    <rect x="18.5" y="33.5" width="12" height="12" rx="3.2" opacity="0.5" />
+    <rect x="33.5" y="33.5" width="12" height="12" rx="3.2" opacity="1" />
+    <rect x="3.5" y="48.5" width="12" height="12" rx="3.2" opacity="0.2" />
+    <rect x="18.5" y="48.5" width="12" height="12" rx="3.2" opacity="0.32" />
+    <rect x="33.5" y="48.5" width="12" height="12" rx="3.2" opacity="0.55" />
+    <rect x="48.5" y="48.5" width="12" height="12" rx="3.2" opacity="1" />
+  </g>
+
+  <g font-family="DejaVu Sans, sans-serif">
+    <text x="88" y="330" fill="#ece9fb" font-size="76" font-weight="bold">mini-gpt-java</text>
+    <text x="88" y="392" fill="#b9a4ff" font-size="34" font-weight="bold">
+      Um GPT escrito à mão, para você entender como ele funciona
+    </text>
+    <text x="88" y="452" fill="#a9a2c9" font-size="27">
+      Modelo de linguagem em nível de caractere, do zero, em Java puro.
+    </text>
+    <text x="88" y="492" fill="#a9a2c9" font-size="27">
+      Sem nenhuma biblioteca de machine learning.
+    </text>
+
+    <g transform="translate(88, 530)">
+      <rect x="0" y="0" width="196" height="46" rx="12" fill="#1e1b38" stroke="#3b3468" />
+      <text x="20" y="30" fill="#f0b429" font-size="21">1 · Bigrama</text>
+
+      <rect x="214" y="0" width="150" height="46" rx="12" fill="#1e1b38" stroke="#3b3468" />
+      <text x="234" y="30" fill="#22c8d8" font-size="21">2 · MLP</text>
+
+      <rect x="384" y="0" width="252" height="46" rx="12" fill="#1e1b38" stroke="#3b3468" />
+      <text x="404" y="30" fill="#9b7dff" font-size="21">3 · Transformer</text>
+    </g>
+  </g>
+</svg>

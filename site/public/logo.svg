@@ -1,0 +1,31 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="mini-gpt">
+  <title>mini-gpt</title>
+  <!--
+    A marca é a máscara causal: a matriz triangular inferior que diz, para cada posição,
+    quais posições anteriores ela pode olhar. A diagonal (a posição olhando para si mesma)
+    é a mais forte; quanto mais para trás, mais fraca. É a figura que o site inteiro
+    ensina, desenhada uma vez.
+  -->
+  <defs>
+    <linearGradient id="mg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#8b6bff" />
+      <stop offset="0.55" stop-color="#6d4aff" />
+      <stop offset="1" stop-color="#22c8d8" />
+    </linearGradient>
+  </defs>
+  <g fill="url(#mg)">
+    <rect x="3.5" y="3.5" width="12" height="12" rx="3.2" opacity="1" />
+
+    <rect x="3.5" y="18.5" width="12" height="12" rx="3.2" opacity="0.45" />
+    <rect x="18.5" y="18.5" width="12" height="12" rx="3.2" opacity="1" />
+
+    <rect x="3.5" y="33.5" width="12" height="12" rx="3.2" opacity="0.28" />
+    <rect x="18.5" y="33.5" width="12" height="12" rx="3.2" opacity="0.5" />
+    <rect x="33.5" y="33.5" width="12" height="12" rx="3.2" opacity="1" />
+
+    <rect x="3.5" y="48.5" width="12" height="12" rx="3.2" opacity="0.2" />
+    <rect x="18.5" y="48.5" width="12" height="12" rx="3.2" opacity="0.32" />
+    <rect x="33.5" y="48.5" width="12" height="12" rx="3.2" opacity="0.55" />
+    <rect x="48.5" y="48.5" width="12" height="12" rx="3.2" opacity="1" />
+  </g>
+</svg>

@@ -1,0 +1,49 @@
+# mini-gpt-java
+
+> Um modelo de linguagem generativo em nível de caractere, treinado do zero em Java puro,
+> sem nenhuma biblioteca de machine learning. Projeto didático: cada classe explica a
+> matemática por trás do código, e o projeto sobe em três níveis.
+
+Repositório: https://github.com/alegauss/mini-gpt
+Site: https://alegauss.github.io/mini-gpt/
+
+## O que é
+
+Java 17+, Maven, e uma única dependência (JUnit 5, só nos testes). Toda a álgebra linear é
+escrita à mão com `double[][]`. Nada de DJL, ND4J, DL4J ou TensorFlow.
+
+## Os três níveis
+
+- Nível 1 — Bigrama (`BigramModel`): conta pares (a, b) no corpus e normaliza com
+  suavização de Laplace. Sem gradiente. Ensina tokenização, máxima verossimilhança,
+  entropia cruzada, temperatura e top-k.
+- Nível 2 — MLP (`MlpModel`): janela fixa de 8 caracteres, embedding → concatenação →
+  camada linear → tanh → saída. Todos os gradientes derivados à mão e comentados passo a
+  passo. Ensina backpropagation, a derivada da tanh, o gradiente de softmax + entropia
+  cruzada (`P − onehot`) e o scatter-add nos embeddings.
+- Nível 3 — Transformer (`TransformerModel`): um GPT em miniatura com autodiff reverso
+  (`Tensor`), embeddings de token e de posição, self-attention causal multi-head,
+  LayerNorm, conexões residuais, rede feed-forward e pesos amarrados. Ensina atenção,
+  máscara causal e por que LayerNorm + residuais estabilizam redes profundas.
+
+## Páginas
+
+- / — a página inicial: a ideia central, os três níveis, demonstrações interativas
+  (tokenizador, bigrama treinado no navegador, temperatura/top-k, máscara causal).
+- /niveis/bigrama/ — nível 1 em profundidade.
+- /niveis/mlp/ — nível 2 em profundidade, com a cadeia de gradientes completa.
+- /niveis/transformer/ — nível 3 em profundidade.
+- /matematica/ — o formulário: notação, softmax, entropia cruzada, perplexidade, regra da
+  cadeia, Adam, LayerNorm, atenção, temperatura e top-k.
+- /como-rodar/ — pré-requisitos, comandos, opções da CLI, corpus e o que esperar.
+
+## Como rodar
+
+```
+mvn test
+mvn -q package -DskipTests
+java -jar target/mini-gpt-java.jar train --model bigram
+java -jar target/mini-gpt-java.jar train --model mlp --steps 3000
+java -jar target/mini-gpt-java.jar train --model transformer --steps 2000
+java -jar target/mini-gpt-java.jar compare --prompt "O menino " --steps 400
+```
