@@ -134,10 +134,13 @@ function AtencaoFigure() {
         </g>
       ))}
 
+      {/* A fórmula de cada projeção fica sob a sua própria caixa. Uma linha só com as três,
+          separadas por espaços, não funcionaria: o SVG colapsa espaços repetidos, e
+          separá-las por pontos as confundiria com os pontos de multiplicação. */}
       {[
-        { x: 40, name: "Q", sub: "o que procuro" },
-        { x: 220, name: "K", sub: "o que ofereço" },
-        { x: 400, name: "V", sub: "o que entrego" },
+        { x: 40, name: "Q", sub: "o que procuro", eq: "Q = x·W_Q" },
+        { x: 220, name: "K", sub: "o que ofereço", eq: "K = x·W_K" },
+        { x: 400, name: "V", sub: "o que entrego", eq: "V = x·W_V" },
       ].map((p) => (
         <g key={p.name}>
           <rect x={p.x} y="88" width="120" height="52" rx="10" fill={PANEL} stroke="var(--n3-line)" strokeWidth="1.5" />
@@ -147,11 +150,11 @@ function AtencaoFigure() {
           <text x={p.x + 60} y="128" fontSize="11.5" fill={LABEL} textAnchor="middle">
             {p.sub}
           </text>
+          <text x={p.x + 60} y="158" fontSize="11.5" fill={LABEL} textAnchor="middle" fontFamily={MONO}>
+            {p.eq}
+          </text>
         </g>
       ))}
-      <text x="40" y="158" fontSize="11.5" fill={LABEL} fontFamily={MONO}>
-        Q = x·W_Q ·  K = x·W_K ·  V = x·W_V
-      </text>
 
       {/* Q e K se encontram nos escores */}
       <path d="M100 140 V178 H280" stroke={LINE} strokeWidth="2" fill="none" />
