@@ -1,0 +1,96 @@
+# O site (site/), separado do projeto Maven.
+#
+# Publicar é deliberado: o deploy só dispara em workflow_dispatch. Um deploy a cada push é
+# um deploy que ninguém consegue segurar enquanto revisa, e o site é o único artefato em
+# que um defeito é público imediatamente.
+#
+# O portão é o próprio build: não há um passo separado de typecheck ou de lint, porque
+# `npm run build` já é os dois. Ele roda o tsc, o build do cliente, o cartão social, o
+# build SSR e o prerender — e a correção do <head> por substituição-ou-erro mais a asserção
+# do par rota/página são as travas de rota e de metadados. Um portão que roda duas vezes é
+# um portão que pode ser satisfeito pela cópia que ninguém manteve atualizada.
+#
+# O portão roda em todo push; o deploy espera ser pedido. O mesmo `npm run build` serve aos
+# dois, porque uma segunda cópia dele seria a próxima a ficar para trás.
+#
+# ┌──────────────────────────────────────────────────────────────────────────────────────┐
+# │ AJUSTE ÚNICO NO REPOSITÓRIO — o deploy é inerte até que ele seja feito:               │
+# │   Settings → Pages → Build and deployment → Source: "GitHub Actions"                  │
+# │ O site é servido em alegauss.github.io/mini-gpt/, endereço que o Pages deriva do nome │
+# │ do repositório e não de nada dentro deste arquivo.                                    │
+# └──────────────────────────────────────────────────────────────────────────────────────┘
+
+name: site
+
+on: [push, pull_request, workflow_dispatch]
+
+# Privilégio mínimo por padrão. As permissões do Pages ficam no job que publica, então um
+# push — que roda este workflow toda vez — nunca recebe o token capaz de fazer deploy.
+permissions:
+  contents: read
+
+# Uma publicação não pode se sobrepor a outra, e dois portões em dois ramos não têm nada a
+# ver um com o outro. É a chave por evento que impede um push de cancelar um deploy no meio.
+concurrency:
+  group: ${{ github.event_name == 'workflow_dispatch' && 'pages' || format('site-gate-{0}', github.ref) }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: build (o portão)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # O cartão social rasteriza texto SVG com o resvg, que precisa de uma fonte em disco.
+      - name: Fontes para o cartão social
+        run: sudo apt-get update && sudo apt-get install -y --no-install-recommends fonts-dejavu-core
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+          cache-dependency-path: site/package-lock.json
+
+      - name: Build
+        working-directory: site
+        run: |
+          npm ci
+          npm run build
+
+      # Só o que está prestes a ser publicado é guardado. Num push, o build é o objetivo
+      # inteiro e a saída não interessa a ninguém.
+      - name: Guardar o site construído para o deploy
+        if: github.event_name == 'workflow_dispatch'
+        uses: actions/upload-artifact@v4
+        with:
+          name: site-dist
+          path: site/dist
+          retention-days: 1
+
+  deploy:
+    name: deploy no Pages
+    needs: build
+    if: github.event_name == 'workflow_dispatch'
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      # Os bytes que o portão já construiu, em vez de um segundo build: dois builds de um
+      # commit são duas respostas sobre ele, e a publicada seria a que ninguém testou.
+      - uses: actions/download-artifact@v4
+        with:
+          name: site-dist
+          path: dist
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+      - id: deploy
+        uses: actions/deploy-pages@v4

@@ -6,6 +6,13 @@ objetivo e didatico: cada classe explica a **matematica** por tras do
 codigo, e o projeto evolui em tres niveis, do mais simples ao mais
 sofisticado.
 
+> **Site do projeto: <https://alegauss.github.io/mini-gpt/>**
+> A versao em forma de aula, em portugues: a ideia central, os tres niveis
+> em profundidade, um formulario com todas as formulas e quatro
+> demonstracoes interativas (tokenizador, bigrama treinado no proprio
+> navegador, temperatura/top-k e mascara causal). O codigo-fonte do site
+> esta em [`site/`](site/).
+
 ## Restricoes do projeto
 
 - **Java 17+**, **Maven**.
@@ -97,7 +104,8 @@ mini-gpt-java/
 │   │   ├── Trainer.java        laco de treino, split treino/validacao
 │   │   └── AdamOptimizer.java  Adam com correcao de vies
 │   └── generate/Sampler.java   amostragem com temperatura e top-k
-└── src/test/java/minigpt/      testes unitarios (JUnit 5)
+├── src/test/java/minigpt/      testes unitarios (JUnit 5)
+└── site/                       o site didatico (React + Vite), veja site/README.md
 ```
 
 ## O que cada nivel ensina
