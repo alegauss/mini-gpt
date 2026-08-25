@@ -352,7 +352,7 @@ const mlp: Level = {
         { code: "V^k" },
         ". Com V = 96 e uma janela de oito, seriam ",
         { code: "96⁸" },
-        " linhas: mais células do que átomos numa sala. E a maior parte delas ficaria em zero, porque nenhum corpus contém todas as combinações.",
+        " linhas, cerca de sete mil trilhões. E, pior do que o tamanho: a esmagadora maioria delas ficaria em zero, porque nenhum corpus contém todas as combinações — de modo que a tabela gigante não teria nada a dizer justamente sobre as janelas que você mais precisa prever.",
       ],
     },
     {

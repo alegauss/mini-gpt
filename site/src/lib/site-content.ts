@@ -473,7 +473,7 @@ export const roadmap = {
   eyebrow: "Roteiro de estudo",
   title: "A ordem em que eu leria os arquivos",
   lead: [
-    "O repositório tem treze classes. Lidas nesta ordem, cada uma só usa o que a anterior já explicou — e nenhuma exige que você acredite em nada por enquanto.",
+    "O repositório tem treze classes; estas dez são o caminho. Lidas nesta ordem, cada uma só usa o que a anterior já explicou — e nenhuma exige que você acredite em nada por enquanto.",
   ] as Rich,
   items: [
     {
@@ -506,7 +506,7 @@ export const roadmap = {
     },
     {
       file: "train/Trainer.java",
-      why: "O laço: sorteia lote, zera gradientes, forward+backward, um passo. Setenta linhas que valem por um capítulo.",
+      why: "O laço: sorteia lote, zera gradientes, forward+backward, um passo. Poucas dezenas de linhas que valem por um capítulo.",
     },
     {
       file: "core/Tensor.java",
