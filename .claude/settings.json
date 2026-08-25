@@ -3,6 +3,9 @@
     "allow": [
       "PowerShell(*)",
       "Bash(*)"
+    ],
+    "additionalDirectories": [
+      "d:\\git\\alegauss\\alegauss.github.io"
     ]
   }
 }

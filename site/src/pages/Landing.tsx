@@ -1,5 +1,6 @@
 import { Nav } from "../components/Nav";
 import { Footer } from "../components/Footer";
+import { AdSlot } from "../components/AdSlot";
 import { Hero } from "../components/sections/Hero";
 import { Idea } from "../components/sections/Idea";
 import { Levels } from "../components/sections/Levels";
@@ -25,6 +26,11 @@ import { Closing } from "../components/sections/Closing";
 //
 // As demonstrações vêm depois dos níveis e antes dos testes de propósito: quem tocou o
 // bigrama funcionando é quem faz a pergunta "mas como sei que o resto está certo?".
+//
+// O anúncio não entra nessa cadeia porque não é parte do argumento — ele fica na costura
+// entre as demonstrações e os testes, que é a única pausa real da página: o leitor acabou
+// de mexer nas demos e ainda não começou a pergunta seguinte. É o ponto em que interromper
+// custa menos, e o único lugar da página em que nada está disputando um clique.
 export function Landing() {
   return (
     <>
@@ -34,6 +40,7 @@ export function Landing() {
       <Levels />
       <Pipeline />
       <Demos />
+      <AdSlot />
       <Trust />
       <Roadmap />
       <Lineage />

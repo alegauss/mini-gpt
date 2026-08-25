@@ -37,6 +37,20 @@
       nele em vez do verdadeiro.
     -->
 
+    <!--
+      A rede de anúncios japode, que preenche o slot de src/components/AdSlot.tsx.
+
+      O único pedido do loader é uma leitura de catálogo já cacheada: ele não põe cookie,
+      não manda pixel de impressão, e o slot recusa a memória de recência, então nada é
+      escrito nesta origem. Async e no head para o catálogo já estar a caminho quando o
+      leitor chegar ao slot — que fica no meio da página inicial, não logo abaixo do herói.
+
+      Fica acima da injeção do Vite e longe do <title> e da <meta name="description">, que
+      são as âncoras que scripts/prerender.mjs troca por substituição-ou-erro.
+    -->
+    <link rel="preconnect" href="https://ads.japode.com" />
+    <script src="https://ads.japode.com/v1/ads.js" async></script>
+
     <!-- A revelação ao rolar começa em opacidade 0 e é levantada pelo observer no cliente.
          Sem JavaScript o texto prerenderizado continua no DOM; isto o torna visível. -->
     <noscript>

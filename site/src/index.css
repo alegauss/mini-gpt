@@ -2301,6 +2301,26 @@ footer .wrap {
   text-underline-offset: 3px;
 }
 
+/* ---------- o slot de anúncio da japode (ads.japode.com) ----------
+   O loader desenha a peça dentro de um shadow root próprio, então nada daqui alcança o
+   anúncio: estas regras decidem só quanta largura ele ganha e quanto ar fica em volta.
+   A peça traz a própria borda, a própria paleta e a própria marca "Ad".
+
+   Sem moldura, sem título e sem .reveal, de propósito. Uma moldura deixaria uma caixa
+   vazia rotulada nos dias em que o catálogo não puder ser lido — o loader recolhe o slot
+   sozinho, então o invólucro precisa recolher junto. E .reveal começa em opacidade 0:
+   se o observer não rodasse, esconderia o anúncio de vez.
+
+   A coluna estreita é o que mantém a peça lendo como um aparte, e não como uma seção
+   deste site — nos 1120px inteiros ela se anunciaria. */
+.ad-seam {
+  padding: 56px 0 8px;
+}
+.ad {
+  max-width: 620px;
+  margin: 0 auto;
+}
+
 /* ---------- reveal ao rolar (anima a propria opacidade; nunca move a janela) ---------- */
 .reveal {
   opacity: 0;
