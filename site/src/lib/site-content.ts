@@ -70,13 +70,13 @@ export const sponsor = {
   license: "Apache 2.0 e auto-hospedáveis",
   products: [
     {
-      name: "Viglet Turing ES",
+      name: "Viglet Turing",
       url: "https://turing.viglet.org",
       logo: `${BASE_PATH}viglet/turing-logo.png`,
       inline: "para o visitante achar o que veio buscar, com respostas de IA tiradas só do seu próprio conteúdo",
     },
     {
-      name: "Viglet Shio CMS",
+      name: "Viglet Shio",
       url: "https://shio.viglet.org",
       logo: `${BASE_PATH}viglet/shio-logo.png`,
       inline: "para uma página nova entrar no ar no mesmo dia, revisada e aprovada pela sua equipe",
