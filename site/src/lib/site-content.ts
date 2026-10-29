@@ -71,13 +71,13 @@ export const sponsor = {
   products: [
     {
       name: "Viglet Turing",
-      url: "https://turing.viglet.org",
+      url: "https://openviglet.github.io/turing/",
       logo: `${BASE_PATH}viglet/turing-logo.png`,
       inline: "para o visitante achar o que veio buscar, com respostas de IA tiradas só do seu próprio conteúdo",
     },
     {
       name: "Viglet Shio",
-      url: "https://shio.viglet.org",
+      url: "https://openviglet.github.io/shio/",
       logo: `${BASE_PATH}viglet/shio-logo.png`,
       inline: "para uma página nova entrar no ar no mesmo dia, revisada e aprovada pela sua equipe",
     },
