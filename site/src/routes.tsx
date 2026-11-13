@@ -8,9 +8,9 @@ import { levels } from "./lib/levels";
 import { mathPage, runPage } from "./lib/pages-content";
 
 // O GitHub Pages deriva o prefixo do nome do repositório: o site é servido em
-// https://alegauss.github.io/mini-gpt/, então a URL canônica, a og:url, o sitemap e todo
+// https://alegauss.com/mini-gpt/, então a URL canônica, a og:url, o sitemap e todo
 // caminho de saída o carregam. Escrito aqui e em vite.config.ts, e em mais lugar nenhum.
-export const SITE_ORIGIN = "https://alegauss.github.io";
+export const SITE_ORIGIN = "https://alegauss.com";
 export const BASE = "/mini-gpt/";
 
 /** O cartão social, rasterizado em dist/og.png. Absoluto, porque quem busca o cartão não

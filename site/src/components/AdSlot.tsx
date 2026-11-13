@@ -33,7 +33,7 @@
  *   desta origem. Ela serve para variar o sorteio entre visitas, e o site já guarda uma
  *   chave só sua (`mg-theme`); uma segunda, de terceiro, não vale a variedade.
  *
- * - `exclude="mini-gpt"` é cinto e suspensório: o catálogo já lista alegauss.github.io
+ * - `exclude="mini-gpt"` é cinto e suspensório: o catálogo já lista alegauss.com
  *   nos `excludeHosts` da campanha, mas essa lista é de lá e pode mudar sem passar por
  *   aqui. Um site não anuncia a si mesmo.
  */

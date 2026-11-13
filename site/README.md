@@ -1,7 +1,7 @@
 # site — o material didático do Mini GPT
 
 O site público do projeto, em português do Brasil, servido em
-<https://alegauss.github.io/mini-gpt/>.
+<https://alegauss.com/mini-gpt/>.
 
 Ele não é uma vitrine do repositório: é a **aula**. O README explica o que o projeto faz;
 o site explica *por que cada conta é aquela*, com as demonstrações rodando no navegador

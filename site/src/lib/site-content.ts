@@ -35,7 +35,7 @@ export const meta = {
 } as const;
 
 export const repoUrl = "https://github.com/alegauss/mini-gpt";
-export const parentUrl = "https://alegauss.github.io/";
+export const parentUrl = "https://alegauss.com/";
 export const BASE_PATH = "/mini-gpt/";
 
 /** Um caminho de página, já com o prefixo que o GitHub Pages exige. */

@@ -5,7 +5,7 @@
 > matemática por trás do código, e o projeto sobe em três níveis.
 
 Repositório: https://github.com/alegauss/mini-gpt
-Site: https://alegauss.github.io/mini-gpt/
+Site: https://alegauss.com/mini-gpt/
 
 ## O que é
 

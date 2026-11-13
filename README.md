@@ -6,7 +6,7 @@ objetivo e didatico: cada classe explica a **matematica** por tras do
 codigo, e o projeto evolui em tres niveis, do mais simples ao mais
 sofisticado.
 
-> **Site do projeto: <https://alegauss.github.io/mini-gpt/>**
+> **Site do projeto: <https://alegauss.com/mini-gpt/>**
 > A versao em forma de aula, em portugues: a ideia central, os tres niveis
 > em profundidade, um formulario com todas as formulas e quatro
 > demonstracoes interativas (tokenizador, bigrama treinado no proprio

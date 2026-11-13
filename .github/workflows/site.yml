@@ -16,7 +16,7 @@
 # ┌──────────────────────────────────────────────────────────────────────────────────────┐
 # │ AJUSTE ÚNICO NO REPOSITÓRIO — o deploy é inerte até que ele seja feito:               │
 # │   Settings → Pages → Build and deployment → Source: "GitHub Actions"                  │
-# │ O site é servido em alegauss.github.io/mini-gpt/, endereço que o Pages deriva do nome │
+# │ O site é servido em alegauss.com/mini-gpt/, endereço que o Pages deriva do nome │
 # │ do repositório e não de nada dentro deste arquivo.                                    │
 # └──────────────────────────────────────────────────────────────────────────────────────┘
 
