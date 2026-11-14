@@ -42,6 +42,26 @@ function escapeHtml(s) {
     .replace(/"/g, "&quot;");
 }
 
+// A trilha de breadcrumb de cada rota, em JSON-LD. Sem ela o Google monta a trilha a partir
+// da URL e pode cortar o meio, mostrando uma página do produto como se fosse do hub.
+const crumbName = (path) => {
+  const slug = path.replace(/\/$/, "").split("/").pop();
+  return slug.split("-").map((w) => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
+};
+function breadcrumbTag(path, canonical) {
+  const items = [
+    { name: "alegauss.com", item: "https://alegauss.com/" },
+    { name: "mini-gpt", item: canonicalUrl("/") },
+  ];
+  if (path !== "/") items.push({ name: crumbName(path), item: canonical });
+  const json = JSON.stringify({
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: items.map((one, i) => ({ "@type": "ListItem", position: i + 1, ...one })),
+  }).replace(/</g, "\\u003c");
+  return `<script type="application/ld+json">${json}</script>`;
+}
+
 if (ROUTE_META.length === 0) {
   throw new Error("prerender: ROUTE_META está vazio — nada a renderizar");
 }
@@ -71,6 +91,7 @@ for (const meta of ROUTE_META) {
 
   const headBlock = [
     `<link rel="canonical" href="${escapeHtml(canonical)}" />`,
+    breadcrumbTag(meta.path, canonical),
     `<meta property="og:type" content="website" />`,
     `<meta property="og:locale" content="pt_BR" />`,
     `<meta property="og:title" content="${escapeHtml(meta.ogTitle)}" />`,
